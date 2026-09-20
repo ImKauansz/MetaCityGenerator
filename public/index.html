@@ -1,590 +1,803 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Meta City Generator</title>
+<title>Meta City Generator</title>
 
-    <style>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
 
-        :root {
-            --bg: #07070b;
-            --card: #111116;
-            --card-hover: #16161d;
-            --border: #262630;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-            --purple: #8b5cf6;
-            --purple-dark: #6d28d9;
-            --purple-light: #a78bfa;
 
-            --text: #f5f5f5;
-            --muted: #92929e;
+:root {
 
-            --danger: #ef4444;
-        }
+    --bg: #07070b;
 
-        body {
+    --card: #111116;
 
-            min-height: 100vh;
+    --card2: #16161d;
 
-            color: var(--text);
+    --border: #282832;
 
-            font-family:
-                Inter,
-                Arial,
-                Helvetica,
-                sans-serif;
+    --purple: #8b5cf6;
 
-            background:
+    --purple2: #6d28d9;
 
-                radial-gradient(
-                    circle at 50% -10%,
-                    rgba(139, 92, 246, .25),
-                    transparent 35%
-                ),
+    --purple-light: #a78bfa;
 
-                radial-gradient(
-                    circle at 10% 80%,
-                    rgba(109, 40, 217, .08),
-                    transparent 30%
-                ),
+    --text: #f5f5f7;
 
-                var(--bg);
-        }
+    --muted: #92929f;
 
-        .container {
+    --danger: #ef4444;
 
-            width: min(
-                1000px,
-                calc(100% - 30px)
-            );
+    --green: #22c55e;
 
-            margin: auto;
+}
 
-            padding:
-                60px 0
-                40px;
-        }
 
-        .hero {
+body {
 
-            text-align: center;
+    min-height: 100vh;
 
-            margin-bottom: 40px;
-        }
+    color: var(--text);
 
-        .logo {
+    font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
 
-            width: 70px;
-            height: 70px;
+    background:
 
-            margin: 0 auto 20px;
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(139,92,246,.22),
+            transparent 38%
+        ),
 
-            display: flex;
+        radial-gradient(
+            circle at 0% 100%,
+            rgba(109,40,217,.08),
+            transparent 35%
+        ),
 
-            align-items: center;
-            justify-content: center;
+        var(--bg);
 
-            border-radius: 20px;
+}
 
-            background:
 
-                linear-gradient(
-                    135deg,
-                    var(--purple),
-                    var(--purple-dark)
-                );
+.container {
 
-            font-size: 24px;
+    width:
+        min(
+            1000px,
+            calc(100% - 30px)
+        );
 
-            font-weight: 900;
+    margin: auto;
 
-            box-shadow:
-                0 20px 60px
-                rgba(139, 92, 246, .25);
-        }
+    padding:
+        60px 0 40px;
 
-        h1 {
+}
 
-            font-size:
-                clamp(
-                    32px,
-                    6vw,
-                    52px
-                );
 
-            letter-spacing: -2px;
+.hero {
 
-            margin-bottom: 10px;
-        }
+    text-align: center;
 
-        .subtitle {
+    margin-bottom: 40px;
 
-            color: var(--muted);
+}
 
-            font-size: 16px;
-        }
 
-        .card {
+.logo {
 
-            background:
-                rgba(17, 17, 22, .88);
+    width: 72px;
+    height: 72px;
 
-            border:
-                1px solid var(--border);
+    display: flex;
 
-            border-radius: 24px;
+    align-items: center;
+    justify-content: center;
 
-            padding: 30px;
+    margin:
+        0 auto 20px;
 
-            backdrop-filter: blur(20px);
+    border-radius: 21px;
 
-            box-shadow:
-                0 30px 100px
-                rgba(0, 0, 0, .35);
-        }
+    background:
 
-        .start {
+        linear-gradient(
+            135deg,
+            var(--purple),
+            var(--purple2)
+        );
 
-            text-align: center;
+    font-size: 25px;
 
-            padding:
-                45px 20px;
-        }
+    font-weight: 900;
 
-        .start-icon {
+    box-shadow:
+        0 20px 60px
+        rgba(139,92,246,.25);
 
-            font-size: 50px;
+}
 
-            margin-bottom: 18px;
-        }
 
-        .start h2 {
+h1 {
 
-            font-size: 25px;
+    font-size:
+        clamp(
+            32px,
+            6vw,
+            52px
+        );
 
-            margin-bottom: 10px;
-        }
+    letter-spacing:
+        -2px;
 
-        .start p {
+    margin-bottom: 10px;
 
-            color: var(--muted);
+}
 
-            line-height: 1.6;
 
-            max-width: 600px;
+.subtitle {
 
-            margin:
-                0 auto 30px;
-        }
+    color:
+        var(--muted);
 
-        .generate {
+    font-size: 16px;
 
-            width: 100%;
+}
 
-            max-width: 350px;
 
-            padding: 17px 25px;
+.card {
 
-            border: none;
+    background:
+        rgba(17,17,22,.88);
 
-            border-radius: 13px;
+    border:
+        1px solid
+        var(--border);
 
-            background:
+    border-radius:
+        24px;
 
-                linear-gradient(
-                    135deg,
-                    var(--purple),
-                    var(--purple-dark)
-                );
+    padding:
+        30px;
 
-            color: white;
+    backdrop-filter:
+        blur(20px);
 
-            font-size: 16px;
+    box-shadow:
+        0 30px 100px
+        rgba(0,0,0,.35);
 
-            font-weight: 800;
+}
 
-            cursor: pointer;
 
-            box-shadow:
-                0 12px 40px
-                rgba(139, 92, 246, .25);
+.start {
 
-            transition: .2s;
-        }
+    text-align: center;
 
-        .generate:hover {
+    padding:
+        45px 20px;
 
-            transform:
-                translateY(-2px);
+}
 
-            box-shadow:
-                0 18px 50px
-                rgba(139, 92, 246, .35);
-        }
 
-        .generate:disabled {
+.start-icon {
 
-            opacity: .6;
+    font-size: 50px;
 
-            cursor: wait;
+    margin-bottom:
+        18px;
 
-            transform: none;
-        }
+}
 
-        .loading {
 
-            display: none;
+.start h2 {
 
-            text-align: center;
+    font-size: 25px;
 
-            padding: 70px 20px;
-        }
+    margin-bottom:
+        10px;
 
-        .spinner {
+}
 
-            width: 48px;
-            height: 48px;
 
-            margin:
-                0 auto 20px;
+.start p {
 
-            border:
-                4px solid
-                #292933;
+    max-width: 600px;
 
-            border-top-color:
-                var(--purple);
+    margin:
+        0 auto 30px;
 
-            border-radius: 50%;
+    color:
+        var(--muted);
 
-            animation:
-                spin .8s linear infinite;
-        }
+    line-height:
+        1.7;
 
-        @keyframes spin {
+}
 
-            to {
-                transform:
-                    rotate(360deg);
-            }
-        }
 
-        .loading h3 {
+.generate {
 
-            margin-bottom: 8px;
-        }
+    width: 100%;
 
-        .loading p {
+    max-width: 350px;
 
-            color: var(--muted);
+    padding:
+        17px 25px;
 
-            font-size: 14px;
-        }
+    border:
+        none;
 
-        .result {
+    border-radius:
+        13px;
 
-            display: none;
-        }
+    background:
 
-        .profile {
+        linear-gradient(
+            135deg,
+            var(--purple),
+            var(--purple2)
+        );
 
-            display: flex;
+    color:
+        white;
 
-            align-items: center;
+    font-size:
+        16px;
 
-            justify-content: space-between;
+    font-weight:
+        800;
 
-            gap: 20px;
+    cursor:
+        pointer;
 
-            padding: 22px;
+    transition:
+        .2s;
 
-            margin-bottom: 18px;
+    box-shadow:
+        0 12px 40px
+        rgba(139,92,246,.25);
 
-            border:
-                1px solid
-                var(--border);
+}
 
-            border-radius: 18px;
 
-            background:
-                var(--card-hover);
-        }
+.generate:hover {
 
-        .profile-label {
+    transform:
+        translateY(-2px);
 
-            color: var(--muted);
+}
 
-            font-size: 11px;
 
-            font-weight: 800;
+.generate:disabled {
 
-            letter-spacing: 1px;
+    opacity:
+        .55;
 
-            margin-bottom: 6px;
-        }
+    cursor:
+        wait;
 
-        .profile-name {
+    transform:
+        none;
 
-            font-size: 25px;
+}
 
-            font-weight: 850;
-        }
 
-        .profile-age {
+.loading {
 
-            color:
-                var(--purple-light);
+    display:
+        none;
 
-            margin-top: 5px;
+    text-align:
+        center;
 
-            font-weight: 700;
-        }
+    padding:
+        70px 20px;
 
-        .copy-all {
+}
 
-            padding:
-                12px 18px;
 
-            border:
-                1px solid
-                var(--border);
+.spinner {
 
-            border-radius: 10px;
+    width:
+        50px;
 
-            background:
-                #20202a;
+    height:
+        50px;
 
-            color: white;
+    margin:
+        0 auto 22px;
 
-            font-weight: 700;
+    border:
+        4px solid
+        #292933;
 
-            cursor: pointer;
-        }
+    border-top-color:
+        var(--purple);
 
-        .answers {
+    border-radius:
+        50%;
 
-            display:
-                flex;
+    animation:
+        spin .8s linear infinite;
 
-            flex-direction:
-                column;
+}
 
-            gap: 12px;
-        }
 
-        .answer {
+@keyframes spin {
 
-            padding: 20px;
+    to {
+        transform:
+            rotate(360deg);
+    }
 
-            border:
-                1px solid
-                var(--border);
+}
 
-            border-radius: 16px;
 
-            background:
-                var(--card);
+.loading h3 {
 
-            transition: .2s;
-        }
+    margin-bottom:
+        8px;
 
-        .answer:hover {
+}
 
-            border-color:
-                #3b3b48;
 
-            background:
-                var(--card-hover);
-        }
+.loading p {
 
-        .answer-header {
+    color:
+        var(--muted);
 
-            display: flex;
+    font-size:
+        14px;
 
-            align-items: center;
+}
 
-            justify-content:
-                space-between;
 
-            gap: 15px;
+.loading-status {
 
-            margin-bottom: 10px;
-        }
+    margin-top:
+        12px;
 
-        .answer-number {
+    color:
+        var(--purple-light);
 
-            color:
-                var(--purple-light);
+    font-size:
+        13px;
 
-            font-size: 13px;
+}
 
-            font-weight: 850;
 
-            letter-spacing: .5px;
-        }
+.result {
 
-        .copy-answer {
+    display:
+        none;
 
-            border: none;
+}
 
-            background: none;
 
-            color: var(--muted);
+.profile {
 
-            cursor: pointer;
+    display:
+        flex;
 
-            font-size: 12px;
-        }
+    align-items:
+        center;
 
-        .copy-answer:hover {
+    justify-content:
+        space-between;
 
-            color: white;
-        }
+    gap:
+        20px;
 
-        .answer-text {
+    padding:
+        22px;
 
-            color: #d9d9e0;
+    margin-bottom:
+        18px;
 
-            font-size: 15px;
+    border:
+        1px solid
+        var(--border);
 
-            line-height: 1.75;
-        }
+    border-radius:
+        18px;
 
-        .story {
+    background:
+        var(--card2);
 
-            line-height: 1.9;
-        }
+}
 
-        .buttons {
 
-            display: flex;
+.profile-label {
 
-            gap: 12px;
+    color:
+        var(--muted);
 
-            margin-top: 20px;
-        }
+    font-size:
+        11px;
 
-        .button {
+    font-weight:
+        800;
 
-            flex: 1;
+    letter-spacing:
+        1px;
 
-            padding: 14px;
+    margin-bottom:
+        6px;
 
-            border: none;
+}
 
-            border-radius: 11px;
 
-            background:
-                #1c1c25;
+.profile-name {
 
-            color: white;
+    font-size:
+        25px;
 
-            font-weight: 750;
+    font-weight:
+        850;
 
-            cursor: pointer;
-        }
+}
 
-        .button.primary {
 
-            background:
-                var(--purple);
-        }
+.profile-age {
 
-        .button:hover {
+    color:
+        var(--purple-light);
 
-            opacity: .85;
-        }
+    margin-top:
+        5px;
 
-        .error {
+    font-weight:
+        700;
 
-            display: none;
+}
 
-            margin-top: 18px;
 
-            padding: 15px;
+.copy-all {
 
-            border-radius: 12px;
+    padding:
+        12px 18px;
 
-            border:
-                1px solid
-                rgba(239, 68, 68, .3);
+    border:
+        1px solid
+        var(--border);
 
-            background:
-                rgba(239, 68, 68, .08);
+    border-radius:
+        10px;
 
-            color:
-                #fca5a5;
+    background:
+        #20202a;
 
-            line-height: 1.5;
-        }
+    color:
+        white;
 
-        footer {
+    font-weight:
+        700;
 
-            text-align: center;
+    cursor:
+        pointer;
 
-            color: #50505a;
+}
 
-            font-size: 12px;
 
-            margin-top: 25px;
-        }
+.copy-all:hover {
 
-        @media(max-width: 650px) {
+    background:
+        #2b2b36;
 
-            .container {
+}
 
-                padding-top: 30px;
-            }
 
-            .card {
+.answers {
 
-                padding: 18px;
+    display:
+        flex;
 
-                border-radius: 18px;
-            }
+    flex-direction:
+        column;
 
-            .profile {
+    gap:
+        12px;
 
-                flex-direction:
-                    column;
+}
 
-                align-items:
-                    flex-start;
-            }
 
-            .copy-all {
+.answer {
 
-                width: 100%;
-            }
+    padding:
+        20px;
 
-            .buttons {
+    border:
+        1px solid
+        var(--border);
 
-                flex-direction:
-                    column;
-            }
-        }
+    border-radius:
+        16px;
 
-    </style>
+    background:
+        var(--card);
+
+    transition:
+        .2s;
+
+}
+
+
+.answer:hover {
+
+    background:
+        var(--card2);
+
+    border-color:
+        #3b3b48;
+
+}
+
+
+.answer-header {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    margin-bottom:
+        10px;
+
+}
+
+
+.answer-number {
+
+    color:
+        var(--purple-light);
+
+    font-size:
+        13px;
+
+    font-weight:
+        850;
+
+}
+
+
+.copy-answer {
+
+    border:
+        none;
+
+    background:
+        none;
+
+    color:
+        var(--muted);
+
+    cursor:
+        pointer;
+
+}
+
+
+.copy-answer:hover {
+
+    color:
+        white;
+
+}
+
+
+.answer-text {
+
+    color:
+        #d9d9e0;
+
+    font-size:
+        15px;
+
+    line-height:
+        1.75;
+
+}
+
+
+.story {
+
+    line-height:
+        1.9;
+
+}
+
+
+.buttons {
+
+    display:
+        flex;
+
+    gap:
+        12px;
+
+    margin-top:
+        20px;
+
+}
+
+
+.button {
+
+    flex:
+        1;
+
+    padding:
+        14px;
+
+    border:
+        none;
+
+    border-radius:
+        11px;
+
+    background:
+        #1c1c25;
+
+    color:
+        white;
+
+    font-weight:
+        750;
+
+    cursor:
+        pointer;
+
+}
+
+
+.button.primary {
+
+    background:
+        var(--purple);
+
+}
+
+
+.button:hover {
+
+    opacity:
+        .85;
+
+}
+
+
+.error {
+
+    display:
+        none;
+
+    margin-top:
+        18px;
+
+    padding:
+        16px;
+
+    border:
+        1px solid
+        rgba(239,68,68,.3);
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(239,68,68,.08);
+
+    color:
+        #fca5a5;
+
+    line-height:
+        1.6;
+
+}
+
+
+footer {
+
+    text-align:
+        center;
+
+    color:
+        #50505a;
+
+    font-size:
+        12px;
+
+    margin-top:
+        25px;
+
+}
+
+
+@media(max-width:650px) {
+
+    .container {
+
+        padding-top:
+            30px;
+
+    }
+
+    .card {
+
+        padding:
+            18px;
+
+        border-radius:
+            18px;
+
+    }
+
+    .profile {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+    }
+
+    .copy-all {
+
+        width:
+            100%;
+
+    }
+
+    .buttons {
+
+        flex-direction:
+            column;
+
+    }
+
+}
+
+</style>
 
 </head>
 
+
 <body>
 
+
 <div class="container">
+
 
     <div class="hero">
 
@@ -602,9 +815,14 @@
 
     </div>
 
+
     <div class="card">
 
-        <div id="start" class="start">
+
+        <div
+            id="start"
+            class="start"
+        >
 
             <div class="start-icon">
                 ✨
@@ -615,9 +833,9 @@
             </h2>
 
             <p>
-                O sistema vai criar automaticamente
-                o nome, idade, respostas e a história
-                completa do personagem.
+                O sistema cria automaticamente
+                nome, idade, respostas e uma
+                história completa para seu personagem.
             </p>
 
             <button
@@ -625,10 +843,11 @@
                 class="generate"
                 onclick="generateCharacter()"
             >
-                Gerar personagem
+                ✨ Gerar personagem
             </button>
 
         </div>
+
 
         <div
             id="loading"
@@ -642,18 +861,27 @@
             </h3>
 
             <p>
-                Gerando identidade, respostas
-                e história.
+                Aguarde alguns segundos.
             </p>
 
+            <div
+                id="loadingStatus"
+                class="loading-status"
+            >
+                Conectando ao Gemini...
+            </div>
+
         </div>
+
 
         <div
             id="result"
             class="result"
         >
 
+
             <div class="profile">
+
 
                 <div>
 
@@ -675,19 +903,23 @@
 
                 </div>
 
+
                 <button
                     class="copy-all"
                     onclick="copyAll()"
                 >
-                    Copiar tudo
+                    📋 Copiar tudo
                 </button>
 
+
             </div>
+
 
             <div
                 id="answers"
                 class="answers"
             ></div>
+
 
             <div class="buttons">
 
@@ -695,301 +927,456 @@
                     class="button primary"
                     onclick="generateCharacter()"
                 >
-                    Gerar outro
+                    🔄 Gerar outro
                 </button>
 
                 <button
                     class="button"
                     onclick="copyAll()"
                 >
-                    Copiar respostas
+                    📋 Copiar respostas
                 </button>
 
             </div>
 
+
         </div>
+
 
         <div
             id="error"
             class="error"
         ></div>
 
+
     </div>
+
 
     <footer>
         Meta City Generator
     </footer>
 
+
 </div>
+
 
 <script>
 
-    let currentCharacter = null;
 
-    async function generateCharacter() {
+let currentCharacter = null;
 
-        const start =
-            document.getElementById("start");
 
-        const loading =
-            document.getElementById("loading");
+async function generateCharacter() {
 
-        const result =
-            document.getElementById("result");
 
-        const error =
-            document.getElementById("error");
+    const start =
+        document.getElementById(
+            "start"
+        );
 
-        const button =
-            document.getElementById(
-                "generateButton"
-            );
 
-        start.style.display = "none";
+    const loading =
+        document.getElementById(
+            "loading"
+        );
 
-        result.style.display = "none";
 
-        error.style.display = "none";
+    const result =
+        document.getElementById(
+            "result"
+        );
 
-        loading.style.display = "block";
 
-        if (button) {
-            button.disabled = true;
-        }
+    const error =
+        document.getElementById(
+            "error"
+        );
 
-        try {
 
-            console.log(
-                "Enviando solicitação..."
-            );
+    const button =
+        document.getElementById(
+            "generateButton"
+        );
 
-            const response =
-                await fetch(
-                    "/api/generate",
-                    {
-                        method: "POST",
 
-                        headers: {
+    const status =
+        document.getElementById(
+            "loadingStatus"
+        );
+
+
+    start.style.display =
+        "none";
+
+
+    result.style.display =
+        "none";
+
+
+    error.style.display =
+        "none";
+
+
+    loading.style.display =
+        "block";
+
+
+    if (button) {
+
+        button.disabled =
+            true;
+
+    }
+
+
+    try {
+
+
+        status.textContent =
+            "Conectando ao Gemini...";
+
+
+        console.log(
+            "Enviando solicitação..."
+        );
+
+
+        const response =
+            await fetch(
+                "/api/generate",
+                {
+
+                    method:
+                        "POST",
+
+                    headers:
+                        {
                             "Content-Type":
                                 "application/json"
                         },
 
-                        body:
-                            JSON.stringify({})
-                    }
-                );
+                    body:
+                        JSON.stringify({})
 
-            console.log(
-                "Status:",
-                response.status
+                }
             );
 
-            const data =
-                await response.json();
 
-            console.log(
-                "Resposta:",
-                data
+        console.log(
+            "Status:",
+            response.status
+        );
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Resposta:",
+            data
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Erro no servidor."
             );
 
-            if (!response.ok) {
-
-                throw new Error(
-                    data.error ||
-                    "Erro no servidor."
-                );
-            }
-
-            if (
-                !data.name ||
-                !data.age ||
-                !data.answers ||
-                data.answers.length !== 10
-            ) {
-
-                throw new Error(
-                    "O servidor não retornou os dados completos."
-                );
-            }
-
-            currentCharacter = data;
-
-            renderCharacter(data);
-
-        } catch (err) {
-
-            console.error(
-                "ERRO:",
-                err
-            );
-
-            error.textContent =
-                "❌ " +
-                err.message;
-
-            error.style.display =
-                "block";
-
-            start.style.display =
-                "block";
-
-        } finally {
-
-            loading.style.display =
-                "none";
-
-            if (button) {
-                button.disabled = false;
-            }
         }
+
+
+        if (
+            !data.name ||
+            !data.age ||
+            !Array.isArray(
+                data.answers
+            ) ||
+            data.answers.length !== 10
+        ) {
+
+            throw new Error(
+                "O servidor não retornou os dados completos."
+            );
+
+        }
+
+
+        currentCharacter =
+            data;
+
+
+        renderCharacter(
+            data
+        );
+
+
+    } catch (err) {
+
+
+        console.error(
+            "ERRO:",
+            err
+        );
+
+
+        error.textContent =
+            "❌ " +
+            (
+                err.message ||
+                "Erro desconhecido."
+            );
+
+
+        error.style.display =
+            "block";
+
+
+        start.style.display =
+            "block";
+
+
+    } finally {
+
+
+        loading.style.display =
+            "none";
+
+
+        if (button) {
+
+            button.disabled =
+                false;
+
+        }
+
     }
 
-    function renderCharacter(data) {
+}
 
+
+function renderCharacter(
+    data
+) {
+
+
+    document.getElementById(
+        "name"
+    ).textContent =
+        data.name;
+
+
+    document.getElementById(
+        "age"
+    ).textContent =
+        data.age +
+        " anos";
+
+
+    const container =
         document.getElementById(
-            "name"
-        ).textContent = data.name;
+            "answers"
+        );
 
-        document.getElementById(
-            "age"
-        ).textContent =
-            data.age + " anos";
 
-        const container =
-            document.getElementById(
-                "answers"
-            );
+    container.innerHTML =
+        "";
 
-        container.innerHTML = "";
 
-        data.answers.forEach(
-            (answer, index) => {
+    data.answers.forEach(
+        (answer, index) => {
 
-                const item =
-                    document.createElement(
-                        "div"
-                    );
 
-                item.className =
-                    "answer";
+            const item =
+                document.createElement(
+                    "div"
+                );
 
-                const number =
-                    index === 9
+
+            item.className =
+                "answer";
+
+
+            const number =
+                index === 9
                     ? "10. HISTÓRIA"
                     : `${index + 1}. RESPOSTA`;
 
-                item.innerHTML = `
 
-                    <div class="answer-header">
+            item.innerHTML = `
 
-                        <span class="answer-number">
-                            ${number}
-                        </span>
+                <div class="answer-header">
 
-                        <button
-                            class="copy-answer"
-                            onclick="copyAnswer(${index})"
-                        >
-                            Copiar
-                        </button>
+                    <span class="answer-number">
+                        ${number}
+                    </span>
 
-                    </div>
-
-                    <div
-                        class="answer-text ${index === 9 ? "story" : ""}"
+                    <button
+                        class="copy-answer"
+                        onclick="copyAnswer(${index})"
                     >
-                        ${escapeHTML(answer)}
-                    </div>
+                        Copiar
+                    </button>
 
-                `;
+                </div>
 
-                container.appendChild(item);
+                <div
+                    class="answer-text ${
+                        index === 9
+                            ? "story"
+                            : ""
+                    }"
+                >
+                    ${escapeHTML(answer)}
+                </div>
 
-            }
-        );
+            `;
 
-        document.getElementById(
-            "result"
-        ).style.display = "block";
 
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    }
-
-    function escapeHTML(text) {
-
-        const div =
-            document.createElement(
-                "div"
+            container.appendChild(
+                item
             );
 
-        div.textContent = text;
 
-        return div.innerHTML
-            .replace(/\n/g, "<br>");
-    }
-
-    async function copyAnswer(index) {
-
-        if (!currentCharacter) {
-            return;
         }
+    );
 
-        await navigator.clipboard.writeText(
-            currentCharacter.answers[index]
+
+    document.getElementById(
+        "result"
+    ).style.display =
+        "block";
+
+
+    window.scrollTo({
+
+        top:
+            0,
+
+        behavior:
+            "smooth"
+
+    });
+
+}
+
+
+function escapeHTML(
+    text
+) {
+
+
+    const div =
+        document.createElement(
+            "div"
         );
 
-        notifyCopied();
+
+    div.textContent =
+        text;
+
+
+    return div.innerHTML
+        .replace(
+            /\n/g,
+            "<br>"
+        );
+
+}
+
+
+async function copyAnswer(
+    index
+) {
+
+
+    if (!currentCharacter) {
+
+        return;
+
     }
 
-    async function copyAll() {
 
-        if (!currentCharacter) {
-            return;
+    await navigator.clipboard.writeText(
+        currentCharacter.answers[index]
+    );
+
+
+    notifyCopied();
+
+}
+
+
+async function copyAll() {
+
+
+    if (!currentCharacter) {
+
+        return;
+
+    }
+
+
+    let text =
+        "";
+
+
+    text +=
+        `Nome: ${currentCharacter.name}\n`;
+
+
+    text +=
+        `Idade: ${currentCharacter.age} anos\n\n`;
+
+
+    currentCharacter.answers.forEach(
+        (answer, index) => {
+
+            text +=
+                `${index + 1}. ${answer}\n\n`;
+
         }
+    );
 
-        let text =
-            `Nome: ${currentCharacter.name}\n`;
 
-        text +=
-            `Idade: ${currentCharacter.age} anos\n\n`;
+    await navigator.clipboard.writeText(
+        text
+    );
 
-        currentCharacter.answers.forEach(
-            (answer, index) => {
 
-                text +=
-                    `${index + 1}. ${answer}\n\n`;
+    notifyCopied();
 
-            }
-        );
+}
 
-        await navigator.clipboard.writeText(
-            text
-        );
 
-        notifyCopied();
-    }
+function notifyCopied() {
 
-    function notifyCopied() {
 
-        const oldTitle =
-            document.title;
+    const oldTitle =
+        document.title;
 
-        document.title =
-            "✓ Copiado!";
 
-        setTimeout(
-            () => {
-                document.title =
-                    oldTitle;
-            },
-            1200
-        );
-    }
+    document.title =
+        "✓ Copiado!";
+
+
+    setTimeout(
+        () => {
+
+            document.title =
+                oldTitle;
+
+        },
+        1200
+    );
+
+}
+
 
 </script>
+
 
 </body>
 
