@@ -7,25 +7,41 @@ dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const MODEL = process.env.GEMINI_MODEL || "gemini-3.6-flash";
+
+// Modelo principal
+const PRIMARY_MODEL =
+    process.env.GEMINI_MODEL || "gemini-3.6-flash";
+
+// Modelo reserva
+const FALLBACK_MODEL =
+    process.env.GEMINI_FALLBACK_MODEL ||
+    "gemini-3.5-flash-lite";
 
 app.use(express.json({ limit: "100kb" }));
 app.use(express.static("public"));
+
 
 console.log("==========================================");
 console.log("       META CITY GENERATOR");
 console.log("==========================================");
 console.log("Porta:", PORT);
-console.log("Modelo:", MODEL);
+console.log("Modelo principal:", PRIMARY_MODEL);
+console.log("Modelo reserva:", FALLBACK_MODEL);
 console.log(
-    "API Key configurada:",
-    process.env.GEMINI_API_KEY ? "SIM" : "NÃO"
+    "API Key:",
+    process.env.GEMINI_API_KEY ? "CONFIGURADA" : "NÃO CONFIGURADA"
 );
 console.log("==========================================");
 
+
 if (!process.env.GEMINI_API_KEY) {
-    console.error("ERRO: GEMINI_API_KEY não configurada.");
+
+    console.error(
+        "ERRO: GEMINI_API_KEY não configurada."
+    );
+
 }
+
 
 const ai = process.env.GEMINI_API_KEY
     ? new GoogleGenAI({
@@ -41,53 +57,37 @@ const ai = process.env.GEMINI_API_KEY
 app.get("/api/status", (req, res) => {
 
     res.json({
+
         online: true,
-        model: MODEL,
+
+        primaryModel:
+            PRIMARY_MODEL,
+
+        fallbackModel:
+            FALLBACK_MODEL,
+
         apiKeyConfigured:
             !!process.env.GEMINI_API_KEY
+
     });
 
 });
 
 
 // ==========================================
-// GERAR PERSONAGEM
+// PROMPT
 // ==========================================
 
-app.post("/api/generate", async (req, res) => {
+function createPrompt() {
 
-    console.log("");
-    console.log("==========================================");
-    console.log("NOVA SOLICITAÇÃO");
-    console.log("==========================================");
+    return `
 
-    try {
+Crie um personagem FICTÍCIO completo para uma
+whitelist de GTA RP/FiveM chamada Meta City.
 
-        if (!ai) {
+O personagem deve ser totalmente inventado.
 
-            return res.status(500).json({
-                error:
-                    "A API Key do Gemini não está configurada no Render."
-            });
-
-        }
-
-
-        // ==========================================
-        // PROMPT
-        // ==========================================
-
-        const prompt = `
-
-Você é um escritor especializado em criar personagens
-fictícios para servidores de GTA RP/FiveM.
-
-Crie UM personagem completo para uma whitelist
-de um servidor chamado Meta City.
-
-O usuário não forneceu nenhuma informação.
-
-Você deve criar sozinho:
+Crie sozinho:
 
 - Nome brasileiro fictício
 - Idade entre 18 e 35 anos
@@ -96,25 +96,20 @@ Você deve criar sozinho:
 - Objetivos
 - História de vida
 
-TODAS as respostas precisam pertencer ao MESMO personagem.
+TODAS as respostas devem pertencer ao MESMO personagem.
 
-Não altere o nome ou idade entre as respostas.
+O nome e a idade precisam permanecer exatamente
+iguais em todas as respostas.
 
-Use português brasileiro natural.
-
-As respostas devem parecer escritas naturalmente
-por uma pessoa.
-
-Evite linguagem excessivamente formal.
+Escreva em português brasileiro natural.
 
 Não use emojis.
 
-Não diga que o personagem foi criado por IA.
+Não diga que foi criado por IA.
 
 Não mencione este prompt.
 
-O personagem é fictício e destinado a roleplay.
-
+Evite respostas excessivamente formais.
 
 ==========================================
 PERGUNTAS
@@ -127,8 +122,8 @@ PERGUNTAS
 3. Você tem conhecimento de que o abuso de bugs
 (falhas do jogo) constitui uma infração grave às
 regras, e que, ao identificar qualquer bug, é sua
-obrigação reportá-lo à equipe responsável,
-em vez de utilizá-lo?
+obrigação reportá-lo à equipe responsável, em vez
+de utilizá-lo?
 
 4. O que é Metagaming? Dê um exemplo.
 
@@ -146,93 +141,72 @@ Seja honesto.
 
 10. Motivo de ir para Meta City.
 
-
 ==========================================
 REGRAS
 ==========================================
 
-RESPOSTA 1:
+1:
+Use o nome fictício criado.
 
-Use o nome fictício criado para o personagem.
-
-RESPOSTA 2:
-
+2:
 Use a idade fictícia criada.
 
-RESPOSTA 3:
+3:
+Responda SIM e mostre que entende que bugs
+devem ser reportados e não utilizados.
 
-Responda SIM e demonstre que entende que bugs
-devem ser reportados e não utilizados para
-obter vantagem.
+4:
+Explique Metagaming de forma simples e dê
+um exemplo de informação obtida fora do RP,
+como uma live ou Discord.
 
-RESPOSTA 4:
-
-Explique MetaGaming de maneira simples e dê
-um exemplo envolvendo informação obtida fora
-do RP, como live, Discord ou conversa externa.
-
-RESPOSTA 5:
-
-Explique PowerGaming de maneira simples e dê
+5:
+Explique Powergaming de forma simples e dê
 um exemplo de algo impossível ou exagerado
 dentro do RP.
 
-RESPOSTA 6:
+6:
+Explique Amor à Vida de forma simples,
+mostrando que o personagem valoriza sua vida.
 
-Explique Amor à Vida de maneira simples,
-mostrando que o personagem valoriza sua vida
-e evita situações desnecessariamente perigosas.
+7:
+Explique Combat Logging de forma simples,
+mostrando que é sair do servidor durante uma
+situação de RP para evitar consequências.
 
-RESPOSTA 7:
-
-Explique Combat Logging de maneira simples,
-deixando claro que é sair do servidor durante
-uma situação de RP para evitar consequências.
-
-RESPOSTA 8:
-
+8:
 Responda NÃO.
 
-RESPOSTA 9:
+9:
+Explique Safe Zone de forma simples.
 
-Explique o que é uma Safe Zone de maneira
-simples e natural.
-
-RESPOSTA 10:
-
-Essa é a parte mais importante.
-
+10:
 Crie uma HISTÓRIA COMPLETA do personagem.
 
 A história deve ser escrita em PRIMEIRA PESSOA.
 
-Deve ter aproximadamente 3 a 5 parágrafos.
+Deve possuir aproximadamente 3 a 5 parágrafos.
 
-A história deve contar:
+Conte:
 
-- Quem é o personagem.
-- Onde cresceu.
-- Como foi sua infância ou juventude.
-- Algumas dificuldades que enfrentou.
-- Problemas ou decisões erradas que teve.
-- O que fez ele querer mudar.
-- Por que decidiu ir para Meta City.
-- O que pretende fazer na cidade.
-- Seus objetivos para o futuro.
+- Quem é o personagem
+- Onde cresceu
+- Como foi sua infância
+- Como foi sua juventude
+- Dificuldades que enfrentou
+- Problemas ou decisões erradas
+- O que fez ele querer mudar
+- Por que decidiu ir para Meta City
+- O que pretende fazer na cidade
+- Seus objetivos
 
-Não faça apenas uma frase dizendo:
-
+Não escreva apenas:
 "Quero recomeçar minha vida."
 
-Transforme a ideia em uma história completa,
-natural e interessante.
+Transforme o motivo de ir para Meta City
+em uma história completa.
 
-A história deve parecer uma apresentação
-do personagem para uma whitelist.
-
-Crie uma história diferente em cada geração.
-
-Não copie exemplos anteriores.
+Cada geração deve criar uma história diferente.
 
 ==========================================
 FORMATO
@@ -240,7 +214,7 @@ FORMATO
 
 Retorne SOMENTE JSON válido.
 
-Formato obrigatório:
+Formato:
 
 {
     "name": "Nome completo",
@@ -260,324 +234,458 @@ Formato obrigatório:
 }
 
 `;
+}
 
 
-        // ==========================================
-        // TENTATIVAS
-        // ==========================================
+// ==========================================
+// FUNÇÃO GEMINI
+// ==========================================
 
-        let response = null;
-        let lastError = null;
+async function generateWithModel(
+    model,
+    prompt
+) {
 
-        const maxAttempts = 4;
-
-        for (
-            let attempt = 1;
-            attempt <= maxAttempts;
-            attempt++
-        ) {
-
-            try {
-
-                console.log(
-                    `Tentativa ${attempt}/${maxAttempts}`
-                );
-
-                console.log(
-                    `Modelo: ${MODEL}`
-                );
+    console.log(
+        `Tentando modelo: ${model}`
+    );
 
 
-                response =
-                    await ai.models.generateContent({
+    const response =
+        await ai.models.generateContent({
 
-                        model: MODEL,
+            model: model,
 
-                        contents: prompt,
+            contents: prompt,
 
-                        config: {
+            config: {
 
-                            temperature: 0.9,
+                responseMimeType:
+                    "application/json",
 
-                            responseMimeType:
-                                "application/json",
+                maxOutputTokens:
+                    5000
 
-                            maxOutputTokens:
-                                5000
+            }
 
-                        }
-
-                    });
+        });
 
 
-                console.log(
-                    "Gemini respondeu com sucesso."
-                );
+    if (!response || !response.text) {
 
-                break;
+        throw new Error(
+            "O Gemini respondeu sem conteúdo."
+        );
 
-
-            } catch (error) {
-
-                lastError = error;
-
-                const message =
-                    error?.message ||
-                    String(error);
-
-                console.error(
-                    `Erro na tentativa ${attempt}:`
-                );
-
-                console.error(message);
+    }
 
 
-                const temporaryError =
-                    message.includes("503") ||
-                    message.includes("UNAVAILABLE") ||
-                    message.includes("high demand") ||
-                    message.includes("429") ||
-                    message.includes("RESOURCE_EXHAUSTED");
+    return response.text;
+
+}
 
 
-                if (!temporaryError) {
+// ==========================================
+// VERIFICAR SE É ERRO TEMPORÁRIO
+// ==========================================
 
-                    console.error(
-                        "Erro não temporário."
+function isTemporaryError(error) {
+
+    const message =
+        error?.message ||
+        String(error);
+
+
+    return (
+
+        message.includes("503") ||
+
+        message.includes("UNAVAILABLE") ||
+
+        message.includes("high demand") ||
+
+        message.includes("429") ||
+
+        message.includes("RESOURCE_EXHAUSTED") ||
+
+        message.includes("overloaded")
+
+    );
+
+}
+
+
+// ==========================================
+// ESPERA
+// ==========================================
+
+function sleep(ms) {
+
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                ms
+            )
+    );
+
+}
+
+
+// ==========================================
+// GERAR
+// ==========================================
+
+app.post(
+    "/api/generate",
+    async (req, res) => {
+
+        console.log("");
+        console.log(
+            "=========================================="
+        );
+        console.log(
+            "NOVA GERAÇÃO"
+        );
+        console.log(
+            "=========================================="
+        );
+
+
+        try {
+
+            if (!ai) {
+
+                return res.status(500).json({
+
+                    error:
+                        "GEMINI_API_KEY não está configurada no Render."
+
+                });
+
+            }
+
+
+            const prompt =
+                createPrompt();
+
+
+            let text = null;
+
+            let lastError = null;
+
+
+            // ==========================================
+            // MODELO PRINCIPAL
+            // ==========================================
+
+            for (
+                let attempt = 1;
+                attempt <= 3;
+                attempt++
+            ) {
+
+                try {
+
+                    console.log(
+                        `Principal: tentativa ${attempt}/3`
                     );
 
+
+                    text =
+                        await generateWithModel(
+                            PRIMARY_MODEL,
+                            prompt
+                        );
+
+
                     break;
+
+
+                } catch (error) {
+
+                    lastError =
+                        error;
+
+
+                    console.error(
+                        `Erro principal ${attempt}:`,
+                        error?.message
+                    );
+
+
+                    if (
+                        !isTemporaryError(
+                            error
+                        )
+                    ) {
+
+                        break;
+
+                    }
+
+
+                    if (
+                        attempt < 3
+                    ) {
+
+                        const delay =
+                            attempt * 2000;
+
+
+                        console.log(
+                            `Aguardando ${delay}ms...`
+                        );
+
+
+                        await sleep(
+                            delay
+                        );
+
+                    }
+
+                }
+
+            }
+
+
+            // ==========================================
+            // FALLBACK
+            // ==========================================
+
+            if (!text) {
+
+                console.log(
+                    "=========================================="
+                );
+
+                console.log(
+                    "MODELO PRINCIPAL INDISPONÍVEL"
+                );
+
+                console.log(
+                    `Tentando fallback: ${FALLBACK_MODEL}`
+                );
+
+                console.log(
+                    "=========================================="
+                );
+
+
+                try {
+
+                    text =
+                        await generateWithModel(
+                            FALLBACK_MODEL,
+                            prompt
+                        );
+
+
+                    console.log(
+                        "Fallback funcionou!"
+                    );
+
+
+                } catch (fallbackError) {
+
+                    lastError =
+                        fallbackError;
+
+
+                    console.error(
+                        "Erro no fallback:",
+                        fallbackError?.message
+                    );
+
+                }
+
+            }
+
+
+            // ==========================================
+            // TODOS FALHARAM
+            // ==========================================
+
+            if (!text) {
+
+                const message =
+                    lastError?.message ||
+                    "Nenhum modelo respondeu.";
+
+
+                if (
+                    message.includes("429") ||
+                    message.includes("RESOURCE_EXHAUSTED")
+                ) {
+
+                    return res.status(429).json({
+
+                        error:
+                            "O limite da API do Gemini foi atingido. Tente novamente em alguns minutos."
+
+                    });
 
                 }
 
 
                 if (
-                    attempt <
-                    maxAttempts
+                    message.includes("503") ||
+                    message.includes("UNAVAILABLE") ||
+                    message.includes("high demand")
                 ) {
 
-                    // 2s, 4s, 6s
-                    const wait =
-                        attempt * 2000;
+                    return res.status(503).json({
 
-                    console.log(
-                        `Aguardando ${wait / 1000}s...`
-                    );
+                        error:
+                            "Os modelos do Gemini estão temporariamente ocupados. Aguarde alguns segundos e tente novamente."
 
-                    await new Promise(
-                        resolve =>
-                            setTimeout(
-                                resolve,
-                                wait
-                            )
-                    );
+                    });
 
                 }
 
-            }
 
-        }
-
-
-        // ==========================================
-        // NENHUMA RESPOSTA
-        // ==========================================
-
-        if (!response) {
-
-            const message =
-                lastError?.message ||
-                "O Gemini não respondeu.";
-
-            if (
-                message.includes("503") ||
-                message.includes("UNAVAILABLE") ||
-                message.includes("high demand")
-            ) {
-
-                return res.status(503).json({
+                return res.status(500).json({
 
                     error:
-                        "O Gemini está com alta demanda no momento. Tente novamente em alguns segundos."
+                        message
 
                 });
 
             }
 
 
-            if (
-                message.includes("429") ||
-                message.includes("RESOURCE_EXHAUSTED")
-            ) {
+            // ==========================================
+            // PARSE JSON
+            // ==========================================
 
-                return res.status(429).json({
+            let result;
+
+
+            try {
+
+                result =
+                    JSON.parse(text);
+
+
+            } catch (error) {
+
+                console.error(
+                    "JSON recebido:"
+                );
+
+                console.error(
+                    text
+                );
+
+
+                return res.status(500).json({
 
                     error:
-                        "O limite da API do Gemini foi atingido. Tente novamente mais tarde."
+                        "O Gemini retornou um formato inválido."
 
                 });
 
             }
 
 
-            return res.status(500).json({
+            // ==========================================
+            // VALIDAR
+            // ==========================================
 
-                error:
-                    message
+            if (
+                !result.name ||
+                !result.age ||
+                !Array.isArray(
+                    result.answers
+                ) ||
+                result.answers.length !== 10
+            ) {
+
+                console.error(
+                    "Resposta incompleta:",
+                    result
+                );
+
+
+                return res.status(500).json({
+
+                    error:
+                        "O Gemini não retornou todas as informações."
+
+                });
+
+            }
+
+
+            console.log(
+                "=========================================="
+            );
+
+            console.log(
+                "SUCESSO"
+            );
+
+            console.log(
+                "Nome:",
+                result.name
+            );
+
+            console.log(
+                "Idade:",
+                result.age
+            );
+
+            console.log(
+                "Respostas:",
+                result.answers.length
+            );
+
+            console.log(
+                "=========================================="
+            );
+
+
+            return res.json({
+
+                name:
+                    result.name,
+
+                age:
+                    result.age,
+
+                answers:
+                    result.answers
 
             });
 
-        }
-
-
-        // ==========================================
-        // LER RESPOSTA
-        // ==========================================
-
-        const text =
-            response.text;
-
-
-        if (!text) {
-
-            return res.status(500).json({
-
-                error:
-                    "O Gemini respondeu sem conteúdo."
-
-            });
-
-        }
-
-
-        console.log(
-            "Tamanho da resposta:",
-            text.length
-        );
-
-
-        // ==========================================
-        // JSON
-        // ==========================================
-
-        let result;
-
-        try {
-
-            result =
-                JSON.parse(text);
 
         } catch (error) {
 
             console.error(
-                "JSON inválido recebido:"
+                "ERRO GERAL:"
             );
-
-            console.error(text);
-
-            return res.status(500).json({
-
-                error:
-                    "O Gemini retornou uma resposta inválida."
-
-            });
-
-        }
-
-
-        // ==========================================
-        // VALIDAR
-        // ==========================================
-
-        if (
-            !result.name ||
-            !result.age ||
-            !Array.isArray(result.answers) ||
-            result.answers.length !== 10
-        ) {
 
             console.error(
-                "Resposta incompleta:"
+                error
             );
 
-            console.error(result);
 
             return res.status(500).json({
 
                 error:
-                    "O Gemini não retornou todas as informações necessárias."
+                    error?.message ||
+                    "Erro interno do servidor."
 
             });
 
         }
 
-
-        console.log(
-            "Personagem:",
-            result.name
-        );
-
-        console.log(
-            "Idade:",
-            result.age
-        );
-
-        console.log(
-            "10 respostas recebidas."
-        );
-
-        console.log(
-            "Geração concluída."
-        );
-
-
-        return res.json({
-
-            name:
-                result.name,
-
-            age:
-                result.age,
-
-            answers:
-                result.answers
-
-        });
-
-
-    } catch (error) {
-
-        console.error("");
-        console.error(
-            "=========================================="
-        );
-        console.error(
-            "ERRO GERAL"
-        );
-        console.error(
-            "=========================================="
-        );
-        console.error(error);
-        console.error(
-            "=========================================="
-        );
-
-
-        return res.status(500).json({
-
-            error:
-                error?.message ||
-                "Erro desconhecido no servidor."
-
-        });
-
     }
-
-});
+);
 
 
 // ==========================================
-// SERVIDOR
+// START
 // ==========================================
 
 app.listen(
@@ -603,7 +711,11 @@ app.listen(
         );
 
         console.log(
-            `Modelo: ${MODEL}`
+            `Principal: ${PRIMARY_MODEL}`
+        );
+
+        console.log(
+            `Fallback: ${FALLBACK_MODEL}`
         );
 
         console.log(
