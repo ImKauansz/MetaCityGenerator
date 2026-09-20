@@ -33,33 +33,57 @@ const ai = process.env.GEMINI_API_KEY
     })
     : null;
 
+
+// ==========================================
+// STATUS
+// ==========================================
+
 app.get("/api/status", (req, res) => {
+
     res.json({
         online: true,
         model: MODEL,
-        apiKeyConfigured: !!process.env.GEMINI_API_KEY
+        apiKeyConfigured:
+            !!process.env.GEMINI_API_KEY
     });
+
 });
+
+
+// ==========================================
+// GERAR PERSONAGEM
+// ==========================================
 
 app.post("/api/generate", async (req, res) => {
 
     console.log("");
     console.log("==========================================");
-    console.log("NOVA SOLICITAÇÃO DE GERAÇÃO");
+    console.log("NOVA SOLICITAÇÃO");
     console.log("==========================================");
 
     try {
 
         if (!ai) {
-            console.error("API KEY NÃO CONFIGURADA.");
 
             return res.status(500).json({
-                error: "A API Key do Gemini não está configurada no Render."
+                error:
+                    "A API Key do Gemini não está configurada no Render."
             });
+
         }
 
+
+        // ==========================================
+        // PROMPT
+        // ==========================================
+
         const prompt = `
-Crie um personagem fictício completo para uma whitelist de GTA RP/FiveM chamada Meta City.
+
+Você é um escritor especializado em criar personagens
+fictícios para servidores de GTA RP/FiveM.
+
+Crie UM personagem completo para uma whitelist
+de um servidor chamado Meta City.
 
 O usuário não forneceu nenhuma informação.
 
@@ -70,7 +94,7 @@ Você deve criar sozinho:
 - Personalidade
 - Passado
 - Objetivos
-- História coerente
+- História de vida
 
 TODAS as respostas precisam pertencer ao MESMO personagem.
 
@@ -78,21 +102,33 @@ Não altere o nome ou idade entre as respostas.
 
 Use português brasileiro natural.
 
+As respostas devem parecer escritas naturalmente
+por uma pessoa.
+
+Evite linguagem excessivamente formal.
+
 Não use emojis.
 
 Não diga que o personagem foi criado por IA.
 
-Não faça respostas extremamente formais.
+Não mencione este prompt.
 
-As respostas devem parecer escritas naturalmente por uma pessoa.
+O personagem é fictício e destinado a roleplay.
 
-PERGUNTAS:
+
+==========================================
+PERGUNTAS
+==========================================
 
 1. Qual seu nome real? (quem está por trás do computador)
 
 2. Quantos anos você tem?
 
-3. Você tem conhecimento de que o abuso de bugs (falhas do jogo) constitui uma infração grave às regras, e que, ao identificar qualquer bug, é sua obrigação reportá-lo à equipe responsável, em vez de utilizá-lo?
+3. Você tem conhecimento de que o abuso de bugs
+(falhas do jogo) constitui uma infração grave às
+regras, e que, ao identificar qualquer bug, é sua
+obrigação reportá-lo à equipe responsável,
+em vez de utilizá-lo?
 
 4. O que é Metagaming? Dê um exemplo.
 
@@ -102,69 +138,109 @@ PERGUNTAS:
 
 7. O que é Combat Logging?
 
-8. Você participa ou já entrou em algum servidor de hack/cheat (aimbot, mod menu, wallhack etc.)? Seja honesto.
+8. Você participa ou já entrou em algum servidor
+de hack/cheat (aimbot, mod menu, wallhack etc.)?
+Seja honesto.
 
 9. O que é uma Safe Zone (Zona Segura)?
 
 10. Motivo de ir para Meta City.
 
-REGRAS:
 
-Resposta 1:
+==========================================
+REGRAS
+==========================================
+
+RESPOSTA 1:
+
 Use o nome fictício criado para o personagem.
 
-Resposta 2:
+RESPOSTA 2:
+
 Use a idade fictícia criada.
 
-Resposta 3:
-Responda SIM e mostre que entende que bugs devem ser reportados e não utilizados.
+RESPOSTA 3:
 
-Resposta 4:
-Explique MetaGaming de maneira simples e dê um exemplo envolvendo informação obtida fora do RP.
+Responda SIM e demonstre que entende que bugs
+devem ser reportados e não utilizados para
+obter vantagem.
 
-Resposta 5:
-Explique PowerGaming de maneira simples e dê um exemplo de algo impossível ou exagerado dentro do RP.
+RESPOSTA 4:
 
-Resposta 6:
-Explique Amor à Vida de maneira simples.
+Explique MetaGaming de maneira simples e dê
+um exemplo envolvendo informação obtida fora
+do RP, como live, Discord ou conversa externa.
 
-Resposta 7:
-Explique Combat Logging de maneira simples.
+RESPOSTA 5:
 
-Resposta 8:
+Explique PowerGaming de maneira simples e dê
+um exemplo de algo impossível ou exagerado
+dentro do RP.
+
+RESPOSTA 6:
+
+Explique Amor à Vida de maneira simples,
+mostrando que o personagem valoriza sua vida
+e evita situações desnecessariamente perigosas.
+
+RESPOSTA 7:
+
+Explique Combat Logging de maneira simples,
+deixando claro que é sair do servidor durante
+uma situação de RP para evitar consequências.
+
+RESPOSTA 8:
+
 Responda NÃO.
 
-Resposta 9:
-Explique o que é uma Safe Zone de maneira simples.
+RESPOSTA 9:
 
-Resposta 10:
+Explique o que é uma Safe Zone de maneira
+simples e natural.
+
+RESPOSTA 10:
+
+Essa é a parte mais importante.
+
 Crie uma HISTÓRIA COMPLETA do personagem.
 
-A resposta 10 deve ter aproximadamente 3 a 5 parágrafos.
+A história deve ser escrita em PRIMEIRA PESSOA.
 
-Conte:
+Deve ter aproximadamente 3 a 5 parágrafos.
+
+A história deve contar:
 
 - Quem é o personagem.
 - Onde cresceu.
-- Como foi sua infância/juventude.
-- Dificuldades que enfrentou.
-- Decisões erradas ou problemas que passou.
+- Como foi sua infância ou juventude.
+- Algumas dificuldades que enfrentou.
+- Problemas ou decisões erradas que teve.
 - O que fez ele querer mudar.
 - Por que decidiu ir para Meta City.
 - O que pretende fazer na cidade.
-- Quais são seus objetivos.
+- Seus objetivos para o futuro.
 
-A história deve ser em primeira pessoa.
+Não faça apenas uma frase dizendo:
 
-Não faça apenas uma frase dizendo que quer trabalhar.
+"Quero recomeçar minha vida."
 
-Transforme o motivo em uma história de personagem completa.
+Transforme a ideia em uma história completa,
+natural e interessante.
+
+A história deve parecer uma apresentação
+do personagem para uma whitelist.
 
 Crie uma história diferente em cada geração.
 
-RETORNE SOMENTE JSON VÁLIDO.
+Não copie exemplos anteriores.
 
-FORMATO:
+==========================================
+FORMATO
+==========================================
+
+Retorne SOMENTE JSON válido.
+
+Formato obrigatório:
 
 {
     "name": "Nome completo",
@@ -182,46 +258,236 @@ FORMATO:
         "Resposta 10"
     ]
 }
+
 `;
 
-        console.log("Enviando solicitação para Gemini...");
-        console.log("Modelo utilizado:", MODEL);
 
-        const response = await ai.models.generateContent({
-            model: MODEL,
-            contents: prompt,
-            config: {
-                temperature: 0.9,
-                responseMimeType: "application/json",
-                maxOutputTokens: 5000
+        // ==========================================
+        // TENTATIVAS
+        // ==========================================
+
+        let response = null;
+        let lastError = null;
+
+        const maxAttempts = 4;
+
+        for (
+            let attempt = 1;
+            attempt <= maxAttempts;
+            attempt++
+        ) {
+
+            try {
+
+                console.log(
+                    `Tentativa ${attempt}/${maxAttempts}`
+                );
+
+                console.log(
+                    `Modelo: ${MODEL}`
+                );
+
+
+                response =
+                    await ai.models.generateContent({
+
+                        model: MODEL,
+
+                        contents: prompt,
+
+                        config: {
+
+                            temperature: 0.9,
+
+                            responseMimeType:
+                                "application/json",
+
+                            maxOutputTokens:
+                                5000
+
+                        }
+
+                    });
+
+
+                console.log(
+                    "Gemini respondeu com sucesso."
+                );
+
+                break;
+
+
+            } catch (error) {
+
+                lastError = error;
+
+                const message =
+                    error?.message ||
+                    String(error);
+
+                console.error(
+                    `Erro na tentativa ${attempt}:`
+                );
+
+                console.error(message);
+
+
+                const temporaryError =
+                    message.includes("503") ||
+                    message.includes("UNAVAILABLE") ||
+                    message.includes("high demand") ||
+                    message.includes("429") ||
+                    message.includes("RESOURCE_EXHAUSTED");
+
+
+                if (!temporaryError) {
+
+                    console.error(
+                        "Erro não temporário."
+                    );
+
+                    break;
+
+                }
+
+
+                if (
+                    attempt <
+                    maxAttempts
+                ) {
+
+                    // 2s, 4s, 6s
+                    const wait =
+                        attempt * 2000;
+
+                    console.log(
+                        `Aguardando ${wait / 1000}s...`
+                    );
+
+                    await new Promise(
+                        resolve =>
+                            setTimeout(
+                                resolve,
+                                wait
+                            )
+                    );
+
+                }
+
             }
-        });
 
-        console.log("Gemini respondeu.");
-
-        const text = response.text;
-
-        if (!text) {
-            throw new Error(
-                "O Gemini respondeu sem conteúdo."
-            );
         }
 
-        console.log("Tamanho da resposta:", text.length);
+
+        // ==========================================
+        // NENHUMA RESPOSTA
+        // ==========================================
+
+        if (!response) {
+
+            const message =
+                lastError?.message ||
+                "O Gemini não respondeu.";
+
+            if (
+                message.includes("503") ||
+                message.includes("UNAVAILABLE") ||
+                message.includes("high demand")
+            ) {
+
+                return res.status(503).json({
+
+                    error:
+                        "O Gemini está com alta demanda no momento. Tente novamente em alguns segundos."
+
+                });
+
+            }
+
+
+            if (
+                message.includes("429") ||
+                message.includes("RESOURCE_EXHAUSTED")
+            ) {
+
+                return res.status(429).json({
+
+                    error:
+                        "O limite da API do Gemini foi atingido. Tente novamente mais tarde."
+
+                });
+
+            }
+
+
+            return res.status(500).json({
+
+                error:
+                    message
+
+            });
+
+        }
+
+
+        // ==========================================
+        // LER RESPOSTA
+        // ==========================================
+
+        const text =
+            response.text;
+
+
+        if (!text) {
+
+            return res.status(500).json({
+
+                error:
+                    "O Gemini respondeu sem conteúdo."
+
+            });
+
+        }
+
+
+        console.log(
+            "Tamanho da resposta:",
+            text.length
+        );
+
+
+        // ==========================================
+        // JSON
+        // ==========================================
 
         let result;
 
         try {
-            result = JSON.parse(text);
-        } catch (jsonError) {
 
-            console.error("ERRO AO INTERPRETAR JSON:");
+            result =
+                JSON.parse(text);
+
+        } catch (error) {
+
+            console.error(
+                "JSON inválido recebido:"
+            );
+
             console.error(text);
 
             return res.status(500).json({
-                error: "O Gemini retornou uma resposta inválida."
+
+                error:
+                    "O Gemini retornou uma resposta inválida."
+
             });
+
         }
+
+
+        // ==========================================
+        // VALIDAR
+        // ==========================================
 
         if (
             !result.name ||
@@ -229,52 +495,120 @@ FORMATO:
             !Array.isArray(result.answers) ||
             result.answers.length !== 10
         ) {
+
             console.error(
-                "Resposta incompleta do Gemini:",
-                result
+                "Resposta incompleta:"
             );
 
+            console.error(result);
+
             return res.status(500).json({
-                error: "O Gemini não retornou todas as respostas."
+
+                error:
+                    "O Gemini não retornou todas as informações necessárias."
+
             });
+
         }
 
-        console.log("Personagem:", result.name);
-        console.log("Idade:", result.age);
-        console.log("10 respostas recebidas.");
-        console.log("Geração concluída com sucesso.");
+
+        console.log(
+            "Personagem:",
+            result.name
+        );
+
+        console.log(
+            "Idade:",
+            result.age
+        );
+
+        console.log(
+            "10 respostas recebidas."
+        );
+
+        console.log(
+            "Geração concluída."
+        );
+
 
         return res.json({
-            name: result.name,
-            age: result.age,
-            answers: result.answers
+
+            name:
+                result.name,
+
+            age:
+                result.age,
+
+            answers:
+                result.answers
+
         });
+
 
     } catch (error) {
 
         console.error("");
-        console.error("==========================================");
-        console.error("ERRO GEMINI");
-        console.error("==========================================");
+        console.error(
+            "=========================================="
+        );
+        console.error(
+            "ERRO GERAL"
+        );
+        console.error(
+            "=========================================="
+        );
         console.error(error);
-        console.error("==========================================");
-        console.error("");
+        console.error(
+            "=========================================="
+        );
+
 
         return res.status(500).json({
+
             error:
                 error?.message ||
-                "Erro desconhecido ao conectar com o Gemini."
+                "Erro desconhecido no servidor."
+
         });
+
     }
+
 });
 
-app.listen(PORT, "0.0.0.0", () => {
 
-    console.log("");
-    console.log("==========================================");
-    console.log("SERVIDOR ONLINE");
-    console.log("==========================================");
-    console.log(`Porta: ${PORT}`);
-    console.log(`Modelo: ${MODEL}`);
-    console.log("");
-});
+// ==========================================
+// SERVIDOR
+// ==========================================
+
+app.listen(
+    PORT,
+    "0.0.0.0",
+    () => {
+
+        console.log("");
+        console.log(
+            "=========================================="
+        );
+
+        console.log(
+            "META CITY GENERATOR ONLINE"
+        );
+
+        console.log(
+            "=========================================="
+        );
+
+        console.log(
+            `Porta: ${PORT}`
+        );
+
+        console.log(
+            `Modelo: ${MODEL}`
+        );
+
+        console.log(
+            "=========================================="
+        );
+
+    }
+);
