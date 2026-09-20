@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Meta City Generator</title>
 
     <style>
+
         * {
             margin: 0;
             padding: 0;
@@ -14,361 +21,565 @@
         }
 
         :root {
-            --bg: #07070a;
-            --card: #101016;
-            --card2: #15151d;
-            --border: #262632;
+            --bg: #07070b;
+            --card: #111116;
+            --card-hover: #16161d;
+            --border: #262630;
+
             --purple: #8b5cf6;
+            --purple-dark: #6d28d9;
             --purple-light: #a78bfa;
-            --text: #f4f4f5;
-            --muted: #8f8f9f;
-            --success: #22c55e;
+
+            --text: #f5f5f5;
+            --muted: #92929e;
+
+            --danger: #ef4444;
         }
 
         body {
+
             min-height: 100vh;
-            background:
-                radial-gradient(
-                    circle at top,
-                    rgba(139, 92, 246, 0.18),
-                    transparent 35%
-                ),
-                var(--bg);
+
             color: var(--text);
+
             font-family:
                 Inter,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
+                Arial,
+                Helvetica,
                 sans-serif;
+
+            background:
+
+                radial-gradient(
+                    circle at 50% -10%,
+                    rgba(139, 92, 246, .25),
+                    transparent 35%
+                ),
+
+                radial-gradient(
+                    circle at 10% 80%,
+                    rgba(109, 40, 217, .08),
+                    transparent 30%
+                ),
+
+                var(--bg);
         }
 
         .container {
-            width: min(1000px, calc(100% - 32px));
+
+            width: min(
+                1000px,
+                calc(100% - 30px)
+            );
+
             margin: auto;
-            padding: 70px 0;
+
+            padding:
+                60px 0
+                40px;
         }
 
         .hero {
+
             text-align: center;
-            margin-bottom: 45px;
+
+            margin-bottom: 40px;
         }
 
         .logo {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 22px;
+
+            width: 70px;
+            height: 70px;
+
+            margin: 0 auto 20px;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
-            border-radius: 18px;
+            border-radius: 20px;
 
             background:
+
                 linear-gradient(
                     135deg,
                     var(--purple),
-                    #5b21b6
+                    var(--purple-dark)
                 );
 
-            box-shadow:
-                0 15px 50px rgba(139, 92, 246, .25);
+            font-size: 24px;
 
-            font-size: 28px;
             font-weight: 900;
+
+            box-shadow:
+                0 20px 60px
+                rgba(139, 92, 246, .25);
         }
 
         h1 {
-            font-size: clamp(32px, 6vw, 52px);
+
+            font-size:
+                clamp(
+                    32px,
+                    6vw,
+                    52px
+                );
+
             letter-spacing: -2px;
-            margin-bottom: 12px;
-        }
 
-        .subtitle {
-            color: var(--muted);
-            font-size: 16px;
-        }
-
-        .main-card {
-            background: rgba(16, 16, 22, .85);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 28px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 30px 100px rgba(0,0,0,.35);
-        }
-
-        .generate-area {
-            text-align: center;
-            padding: 30px 10px 20px;
-        }
-
-        .generate-area h2 {
-            font-size: 24px;
             margin-bottom: 10px;
         }
 
-        .generate-area p {
+        .subtitle {
+
             color: var(--muted);
-            margin-bottom: 28px;
+
+            font-size: 16px;
         }
 
-        button {
+        .card {
+
+            background:
+                rgba(17, 17, 22, .88);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 24px;
+
+            padding: 30px;
+
+            backdrop-filter: blur(20px);
+
+            box-shadow:
+                0 30px 100px
+                rgba(0, 0, 0, .35);
+        }
+
+        .start {
+
+            text-align: center;
+
+            padding:
+                45px 20px;
+        }
+
+        .start-icon {
+
+            font-size: 50px;
+
+            margin-bottom: 18px;
+        }
+
+        .start h2 {
+
+            font-size: 25px;
+
+            margin-bottom: 10px;
+        }
+
+        .start p {
+
+            color: var(--muted);
+
+            line-height: 1.6;
+
+            max-width: 600px;
+
+            margin:
+                0 auto 30px;
+        }
+
+        .generate {
+
+            width: 100%;
+
+            max-width: 350px;
+
+            padding: 17px 25px;
+
             border: none;
-            cursor: pointer;
-            font-family: inherit;
-        }
-
-        .generate-btn {
-            min-width: 260px;
-            padding: 16px 25px;
 
             border-radius: 13px;
 
             background:
+
                 linear-gradient(
                     135deg,
                     var(--purple),
-                    #6d28d9
+                    var(--purple-dark)
                 );
 
             color: white;
+
             font-size: 16px;
-            font-weight: 700;
+
+            font-weight: 800;
+
+            cursor: pointer;
 
             box-shadow:
-                0 10px 35px rgba(139, 92, 246, .25);
+                0 12px 40px
+                rgba(139, 92, 246, .25);
 
             transition: .2s;
         }
 
-        .generate-btn:hover {
-            transform: translateY(-2px);
+        .generate:hover {
+
+            transform:
+                translateY(-2px);
+
             box-shadow:
-                0 15px 45px rgba(139, 92, 246, .35);
+                0 18px 50px
+                rgba(139, 92, 246, .35);
         }
 
-        .generate-btn:disabled {
+        .generate:disabled {
+
             opacity: .6;
+
             cursor: wait;
+
             transform: none;
         }
 
         .loading {
+
             display: none;
+
             text-align: center;
-            padding: 35px 10px;
+
+            padding: 70px 20px;
         }
 
         .spinner {
-            width: 42px;
-            height: 42px;
 
-            margin: 0 auto 18px;
+            width: 48px;
+            height: 48px;
 
-            border: 4px solid #292934;
-            border-top-color: var(--purple);
+            margin:
+                0 auto 20px;
+
+            border:
+                4px solid
+                #292933;
+
+            border-top-color:
+                var(--purple);
 
             border-radius: 50%;
 
-            animation: spin 0.8s linear infinite;
+            animation:
+                spin .8s linear infinite;
         }
 
         @keyframes spin {
+
             to {
-                transform: rotate(360deg);
+                transform:
+                    rotate(360deg);
             }
         }
 
-        .loading-text {
-            font-weight: 600;
+        .loading h3 {
+
+            margin-bottom: 8px;
         }
 
-        .loading-sub {
-            margin-top: 7px;
+        .loading p {
+
             color: var(--muted);
+
             font-size: 14px;
         }
 
         .result {
+
             display: none;
         }
 
-        .character-header {
+        .profile {
+
             display: flex;
+
             align-items: center;
+
             justify-content: space-between;
+
             gap: 20px;
 
             padding: 22px;
-            margin-bottom: 20px;
 
-            border: 1px solid var(--border);
-            background: var(--card2);
+            margin-bottom: 18px;
+
+            border:
+                1px solid
+                var(--border);
 
             border-radius: 18px;
+
+            background:
+                var(--card-hover);
         }
 
-        .character-info small {
-            display: block;
+        .profile-label {
+
             color: var(--muted);
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
             margin-bottom: 6px;
         }
 
-        .character-name {
+        .profile-name {
+
             font-size: 25px;
-            font-weight: 800;
+
+            font-weight: 850;
         }
 
-        .character-age {
-            color: var(--purple-light);
+        .profile-age {
+
+            color:
+                var(--purple-light);
+
+            margin-top: 5px;
+
             font-weight: 700;
-            margin-top: 4px;
         }
 
         .copy-all {
-            padding: 12px 18px;
+
+            padding:
+                12px 18px;
+
+            border:
+                1px solid
+                var(--border);
+
             border-radius: 10px;
 
-            background: #22222c;
+            background:
+                #20202a;
+
             color: white;
 
             font-weight: 700;
 
-            transition: .2s;
-        }
-
-        .copy-all:hover {
-            background: #2d2d3a;
+            cursor: pointer;
         }
 
         .answers {
-            display: flex;
-            flex-direction: column;
-            gap: 13px;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap: 12px;
         }
 
         .answer {
-            border: 1px solid var(--border);
-            background: var(--card);
-            border-radius: 16px;
+
             padding: 20px;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 16px;
+
+            background:
+                var(--card);
 
             transition: .2s;
         }
 
         .answer:hover {
-            border-color: #383846;
+
+            border-color:
+                #3b3b48;
+
+            background:
+                var(--card-hover);
         }
 
-        .answer-top {
+        .answer-header {
+
             display: flex;
-            justify-content: space-between;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
             gap: 15px;
-            margin-bottom: 11px;
+
+            margin-bottom: 10px;
         }
 
-        .question-number {
-            color: var(--purple-light);
-            font-weight: 800;
-            font-size: 14px;
-        }
+        .answer-number {
 
-        .copy-one {
-            color: var(--muted);
-            background: transparent;
+            color:
+                var(--purple-light);
+
             font-size: 13px;
-            padding: 3px 0;
+
+            font-weight: 850;
+
+            letter-spacing: .5px;
         }
 
-        .copy-one:hover {
+        .copy-answer {
+
+            border: none;
+
+            background: none;
+
+            color: var(--muted);
+
+            cursor: pointer;
+
+            font-size: 12px;
+        }
+
+        .copy-answer:hover {
+
             color: white;
         }
 
         .answer-text {
-            color: #d8d8df;
-            line-height: 1.7;
+
+            color: #d9d9e0;
+
             font-size: 15px;
-            white-space: pre-wrap;
+
+            line-height: 1.75;
         }
 
         .story {
-            line-height: 1.85;
+
+            line-height: 1.9;
         }
 
-        .actions {
+        .buttons {
+
             display: flex;
+
             gap: 12px;
+
             margin-top: 20px;
         }
 
-        .action-btn {
+        .button {
+
             flex: 1;
+
             padding: 14px;
+
+            border: none;
+
             border-radius: 11px;
 
-            background: #191922;
+            background:
+                #1c1c25;
+
             color: white;
 
-            font-weight: 700;
+            font-weight: 750;
+
+            cursor: pointer;
         }
 
-        .action-btn.primary {
-            background: var(--purple);
+        .button.primary {
+
+            background:
+                var(--purple);
         }
 
-        .action-btn:hover {
-            opacity: .88;
+        .button:hover {
+
+            opacity: .85;
         }
 
         .error {
+
             display: none;
-            margin-top: 20px;
+
+            margin-top: 18px;
+
             padding: 15px;
+
             border-radius: 12px;
 
-            background: rgba(239, 68, 68, .1);
-            border: 1px solid rgba(239, 68, 68, .25);
+            border:
+                1px solid
+                rgba(239, 68, 68, .3);
 
-            color: #fca5a5;
+            background:
+                rgba(239, 68, 68, .08);
+
+            color:
+                #fca5a5;
+
+            line-height: 1.5;
         }
 
         footer {
+
             text-align: center;
-            color: #555562;
+
+            color: #50505a;
+
             font-size: 12px;
+
             margin-top: 25px;
         }
 
-        @media (max-width: 650px) {
+        @media(max-width: 650px) {
+
             .container {
-                padding: 35px 0;
+
+                padding-top: 30px;
             }
 
-            .main-card {
+            .card {
+
                 padding: 18px;
+
                 border-radius: 18px;
             }
 
-            .character-header {
-                align-items: flex-start;
-                flex-direction: column;
+            .profile {
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    flex-start;
             }
 
             .copy-all {
+
                 width: 100%;
             }
 
-            .actions {
-                flex-direction: column;
-            }
+            .buttons {
 
-            .generate-btn {
-                width: 100%;
+                flex-direction:
+                    column;
             }
         }
+
     </style>
+
 </head>
 
 <body>
@@ -381,7 +592,9 @@
             MC
         </div>
 
-        <h1>Meta City Generator</h1>
+        <h1>
+            Meta City Generator
+        </h1>
 
         <p class="subtitle">
             Gere um personagem completo para sua whitelist
@@ -389,62 +602,74 @@
 
     </div>
 
-    <div class="main-card">
+    <div class="card">
 
-        <div id="generator">
+        <div id="start" class="start">
 
-            <div class="generate-area">
-
-                <h2>Crie seu personagem</h2>
-
-                <p>
-                    O gerador cria nome, idade, personalidade,
-                    respostas e história automaticamente.
-                </p>
-
-                <button
-                    id="generateBtn"
-                    class="generate-btn"
-                    onclick="generateCharacter()"
-                >
-                    ✨ Gerar personagem
-                </button>
-
+            <div class="start-icon">
+                ✨
             </div>
+
+            <h2>
+                Criar novo personagem
+            </h2>
+
+            <p>
+                O sistema vai criar automaticamente
+                o nome, idade, respostas e a história
+                completa do personagem.
+            </p>
+
+            <button
+                id="generateButton"
+                class="generate"
+                onclick="generateCharacter()"
+            >
+                Gerar personagem
+            </button>
 
         </div>
 
-        <div id="loading" class="loading">
+        <div
+            id="loading"
+            class="loading"
+        >
 
             <div class="spinner"></div>
 
-            <div class="loading-text">
-                Criando seu personagem...
-            </div>
+            <h3>
+                Criando personagem...
+            </h3>
 
-            <div class="loading-sub">
-                Gerando identidade, respostas e história
-            </div>
+            <p>
+                Gerando identidade, respostas
+                e história.
+            </p>
 
         </div>
 
-        <div id="result" class="result">
+        <div
+            id="result"
+            class="result"
+        >
 
-            <div class="character-header">
+            <div class="profile">
 
-                <div class="character-info">
+                <div>
 
-                    <small>PERSONAGEM GERADO</small>
+                    <div class="profile-label">
+                        PERSONAGEM GERADO
+                    </div>
 
                     <div
-                        id="characterName"
-                        class="character-name"
+                        id="name"
+                        class="profile-name"
                     >
                     </div>
 
                     <div
-                        id="characterAge"
-                        class="character-age"
+                        id="age"
+                        class="profile-age"
                     >
                     </div>
 
@@ -454,7 +679,7 @@
                     class="copy-all"
                     onclick="copyAll()"
                 >
-                    📋 Copiar tudo
+                    Copiar tudo
                 </button>
 
             </div>
@@ -464,20 +689,20 @@
                 class="answers"
             ></div>
 
-            <div class="actions">
+            <div class="buttons">
 
                 <button
-                    class="action-btn primary"
+                    class="button primary"
                     onclick="generateCharacter()"
                 >
-                    🔄 Gerar outro
+                    Gerar outro
                 </button>
 
                 <button
-                    class="action-btn"
+                    class="button"
                     onclick="copyAll()"
                 >
-                    📋 Copiar respostas
+                    Copiar respostas
                 </button>
 
             </div>
@@ -492,26 +717,40 @@
     </div>
 
     <footer>
-        Meta City Generator • Gerador de personagens
+        Meta City Generator
     </footer>
 
 </div>
 
 <script>
 
-    let currentData = null;
+    let currentCharacter = null;
 
     async function generateCharacter() {
 
-        const button = document.getElementById("generateBtn");
-        const generator = document.getElementById("generator");
-        const loading = document.getElementById("loading");
-        const result = document.getElementById("result");
-        const error = document.getElementById("error");
+        const start =
+            document.getElementById("start");
+
+        const loading =
+            document.getElementById("loading");
+
+        const result =
+            document.getElementById("result");
+
+        const error =
+            document.getElementById("error");
+
+        const button =
+            document.getElementById(
+                "generateButton"
+            );
+
+        start.style.display = "none";
+
+        result.style.display = "none";
 
         error.style.display = "none";
-        result.style.display = "none";
-        generator.style.display = "none";
+
         loading.style.display = "block";
 
         if (button) {
@@ -520,129 +759,158 @@
 
         try {
 
-            const response = await fetch("/api/generate", {
+            console.log(
+                "Enviando solicitação..."
+            );
 
-                method: "POST",
+            const response =
+                await fetch(
+                    "/api/generate",
+                    {
+                        method: "POST",
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
 
-                body: JSON.stringify({})
+                        body:
+                            JSON.stringify({})
+                    }
+                );
 
-            });
+            console.log(
+                "Status:",
+                response.status
+            );
 
-            const data = await response.json();
+            const data =
+                await response.json();
+
+            console.log(
+                "Resposta:",
+                data
+            );
 
             if (!response.ok) {
+
                 throw new Error(
                     data.error ||
-                    "Erro ao gerar personagem."
+                    "Erro no servidor."
                 );
             }
 
-            currentData = data;
+            if (
+                !data.name ||
+                !data.age ||
+                !data.answers ||
+                data.answers.length !== 10
+            ) {
 
-            showResult(data);
+                throw new Error(
+                    "O servidor não retornou os dados completos."
+                );
+            }
+
+            currentCharacter = data;
+
+            renderCharacter(data);
 
         } catch (err) {
 
-            console.error(err);
+            console.error(
+                "ERRO:",
+                err
+            );
 
             error.textContent =
                 "❌ " +
-                (err.message ||
-                "Erro ao gerar personagem.");
+                err.message;
 
-            error.style.display = "block";
+            error.style.display =
+                "block";
 
-            generator.style.display = "block";
+            start.style.display =
+                "block";
 
         } finally {
 
-            loading.style.display = "none";
+            loading.style.display =
+                "none";
 
             if (button) {
                 button.disabled = false;
             }
-
         }
     }
 
-    function showResult(data) {
+    function renderCharacter(data) {
 
-        const result =
-            document.getElementById("result");
+        document.getElementById(
+            "name"
+        ).textContent = data.name;
 
-        const name =
-            document.getElementById("characterName");
+        document.getElementById(
+            "age"
+        ).textContent =
+            data.age + " anos";
 
-        const age =
-            document.getElementById("characterAge");
+        const container =
+            document.getElementById(
+                "answers"
+            );
 
-        const answers =
-            document.getElementById("answers");
+        container.innerHTML = "";
 
-        name.textContent = data.name;
+        data.answers.forEach(
+            (answer, index) => {
 
-        age.textContent =
-            `${data.age} anos`;
+                const item =
+                    document.createElement(
+                        "div"
+                    );
 
-        answers.innerHTML = "";
+                item.className =
+                    "answer";
 
-        data.answers.forEach((answer, index) => {
+                const number =
+                    index === 9
+                    ? "10. HISTÓRIA"
+                    : `${index + 1}. RESPOSTA`;
 
-            const div =
-                document.createElement("div");
+                item.innerHTML = `
 
-            div.className = "answer";
+                    <div class="answer-header">
 
-            if (index === 9) {
-                div.innerHTML = `
-                    <div class="answer-top">
-                        <span class="question-number">
-                            10. HISTÓRIA
+                        <span class="answer-number">
+                            ${number}
                         </span>
 
                         <button
-                            class="copy-one"
+                            class="copy-answer"
                             onclick="copyAnswer(${index})"
                         >
                             Copiar
                         </button>
+
                     </div>
 
-                    <div class="answer-text story">
+                    <div
+                        class="answer-text ${index === 9 ? "story" : ""}"
+                    >
                         ${escapeHTML(answer)}
                     </div>
+
                 `;
-            } else {
 
-                div.innerHTML = `
-                    <div class="answer-top">
-                        <span class="question-number">
-                            ${index + 1}. RESPOSTA
-                        </span>
+                container.appendChild(item);
 
-                        <button
-                            class="copy-one"
-                            onclick="copyAnswer(${index})"
-                        >
-                            Copiar
-                        </button>
-                    </div>
-
-                    <div class="answer-text">
-                        ${escapeHTML(answer)}
-                    </div>
-                `;
             }
+        );
 
-            answers.appendChild(div);
-
-        });
-
-        result.style.display = "block";
+        document.getElementById(
+            "result"
+        ).style.display = "block";
 
         window.scrollTo({
             top: 0,
@@ -653,7 +921,9 @@
     function escapeHTML(text) {
 
         const div =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         div.textContent = text;
 
@@ -663,24 +933,30 @@
 
     async function copyAnswer(index) {
 
-        if (!currentData) return;
+        if (!currentCharacter) {
+            return;
+        }
 
-        const text =
-            currentData.answers[index];
+        await navigator.clipboard.writeText(
+            currentCharacter.answers[index]
+        );
 
-        await navigator.clipboard.writeText(text);
-
-        showCopied();
-
+        notifyCopied();
     }
 
     async function copyAll() {
 
-        if (!currentData) return;
+        if (!currentCharacter) {
+            return;
+        }
 
-        let text = "";
+        let text =
+            `Nome: ${currentCharacter.name}\n`;
 
-        currentData.answers.forEach(
+        text +=
+            `Idade: ${currentCharacter.age} anos\n\n`;
+
+        currentCharacter.answers.forEach(
             (answer, index) => {
 
                 text +=
@@ -689,27 +965,32 @@
             }
         );
 
-        await navigator.clipboard.writeText(text);
+        await navigator.clipboard.writeText(
+            text
+        );
 
-        showCopied();
-
+        notifyCopied();
     }
 
-    function showCopied() {
+    function notifyCopied() {
 
-        const old =
+        const oldTitle =
             document.title;
 
         document.title =
             "✓ Copiado!";
 
-        setTimeout(() => {
-            document.title = old;
-        }, 1200);
-
+        setTimeout(
+            () => {
+                document.title =
+                    oldTitle;
+            },
+            1200
+        );
     }
 
 </script>
 
 </body>
+
 </html>
