@@ -117,8 +117,27 @@ REGRAS:
 
 8. As respostas devem parecer escritas normalmente por uma pessoa.
 
-9. Na pergunta 10, responda somente o motivo de ir para Meta City.
-Não crie uma história completa.
+9. A pergunta 10 é diferente das demais. Ela deve gerar uma HISTÓRIA DE PERSONAGEM completa, usando o motivo informado pelo usuário como base.
+
+A história deve ser escrita em primeira pessoa, de forma natural e envolvente, como uma apresentação do personagem.
+
+A história pode incluir:
+- Nome e apelido, se essas informações forem fornecidas.
+- Onde o personagem cresceu.
+- Como foi sua vida antes de ir para Meta City.
+- Dificuldades e acontecimentos coerentes com o motivo informado.
+- O que fez o personagem decidir mudar ou buscar uma nova oportunidade.
+- A chegada em Meta City.
+- Seus objetivos atuais, como trabalho, recomeço e construção de uma nova vida.
+
+IMPORTANTE:
+- Não invente fatos pessoais reais do usuário.
+- A história é fictícia e deve ser tratada como história do PERSONAGEM.
+- Pode criar detalhes fictícios para desenvolver a história do personagem.
+- Mantenha coerência com o motivo informado.
+- Não copie exatamente exemplos fornecidos pelo usuário.
+- Escreva aproximadamente 2 a 4 parágrafos.
+- O resultado deve parecer uma história escrita por uma pessoa, sem linguagem robótica.
 
 10. Não coloque comentários explicando o que você fez.
 
