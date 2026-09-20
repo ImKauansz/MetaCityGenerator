@@ -1,7 +1,7 @@
 {
   "name": "metacity-generator",
   "version": "1.0.0",
-  "description": "Gerador de respostas para formulário Meta City",
+  "description": "Gerador de personagens para Meta City",
   "type": "module",
   "main": "server.js",
   "scripts": {
