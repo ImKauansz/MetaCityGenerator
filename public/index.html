@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 
 <head>
@@ -13,7 +12,6 @@
 
 <title>Meta City Generator</title>
 
-
 <style>
 
 * {
@@ -22,33 +20,34 @@
     box-sizing: border-box;
 }
 
-
 :root {
 
-    --bg: #07070b;
+    --background: #060609;
+    --background-2: #0b0b11;
 
-    --card: #111116;
+    --card: rgba(17,17,25,.72);
 
-    --card2: #16161d;
+    --card-hover: rgba(25,25,36,.88);
 
-    --border: #282832;
+    --border: rgba(255,255,255,.08);
 
     --purple: #8b5cf6;
 
-    --purple2: #6d28d9;
-
     --purple-light: #a78bfa;
 
-    --text: #f5f5f7;
+    --purple-dark: #6d28d9;
 
-    --muted: #92929f;
+    --white: #ffffff;
 
-    --danger: #ef4444;
+    --text: #eeeeF3;
 
-    --green: #22c55e;
+    --muted: #8f8f9d;
 
 }
 
+html {
+    scroll-behavior: smooth;
+}
 
 body {
 
@@ -58,284 +57,587 @@ body {
 
     font-family:
         Inter,
-        Arial,
-        Helvetica,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
         sans-serif;
 
     background:
 
         radial-gradient(
-            circle at 50% -10%,
-            rgba(139,92,246,.22),
+            circle at 50% -20%,
+            rgba(139,92,246,.24),
             transparent 38%
         ),
 
         radial-gradient(
-            circle at 0% 100%,
-            rgba(109,40,217,.08),
-            transparent 35%
+            circle at 0% 40%,
+            rgba(109,40,217,.10),
+            transparent 30%
         ),
 
-        var(--bg);
+        radial-gradient(
+            circle at 100% 70%,
+            rgba(139,92,246,.07),
+            transparent 30%
+        ),
+
+        var(--background);
 
 }
 
+
+/* ==========================================
+   BACKGROUND
+========================================== */
+
+.background {
+
+    position: fixed;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+    z-index: -1;
+
+}
+
+.orb {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    filter: blur(100px);
+
+    opacity: .14;
+
+    animation:
+        float 10s ease-in-out infinite;
+
+}
+
+.orb.one {
+
+    width: 300px;
+    height: 300px;
+
+    background: #8b5cf6;
+
+    top: -100px;
+    left: -100px;
+
+}
+
+.orb.two {
+
+    width: 250px;
+    height: 250px;
+
+    background: #6d28d9;
+
+    right: -100px;
+    top: 35%;
+
+    animation-delay:
+        -4s;
+
+}
+
+.orb.three {
+
+    width: 220px;
+    height: 220px;
+
+    background: #7c3aed;
+
+    bottom: -100px;
+    left: 40%;
+
+    animation-delay:
+        -7s;
+
+}
+
+@keyframes float {
+
+    0%,100% {
+        transform:
+            translateY(0);
+    }
+
+    50% {
+        transform:
+            translateY(-30px);
+    }
+
+}
+
+
+/* ==========================================
+   CONTAINER
+========================================== */
 
 .container {
 
     width:
         min(
-            1000px,
-            calc(100% - 30px)
+            1050px,
+            calc(100% - 32px)
         );
-
-    margin: auto;
-
-    padding:
-        60px 0 40px;
-
-}
-
-
-.hero {
-
-    text-align: center;
-
-    margin-bottom: 40px;
-
-}
-
-
-.logo {
-
-    width: 72px;
-    height: 72px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
 
     margin:
-        0 auto 20px;
+        auto;
 
-    border-radius: 21px;
-
-    background:
-
-        linear-gradient(
-            135deg,
-            var(--purple),
-            var(--purple2)
-        );
-
-    font-size: 25px;
-
-    font-weight: 900;
-
-    box-shadow:
-        0 20px 60px
-        rgba(139,92,246,.25);
+    padding:
+        55px 0 45px;
 
 }
 
 
-h1 {
+/* ==========================================
+   HEADER
+========================================== */
 
-    font-size:
-        clamp(
-            32px,
-            6vw,
-            52px
-        );
+.header {
 
-    letter-spacing:
-        -2px;
+    text-align:
+        center;
 
-    margin-bottom: 10px;
+    margin-bottom:
+        35px;
 
 }
 
+.badge {
 
-.subtitle {
+    display:
+        inline-flex;
 
-    color:
-        var(--muted);
+    align-items:
+        center;
 
-    font-size: 16px;
+    gap:
+        8px;
 
-}
-
-
-.card {
-
-    background:
-        rgba(17,17,22,.88);
+    padding:
+        8px 13px;
 
     border:
         1px solid
-        var(--border);
+        rgba(139,92,246,.25);
 
     border-radius:
-        24px;
+        999px;
 
-    padding:
-        30px;
+    background:
+        rgba(139,92,246,.08);
 
-    backdrop-filter:
-        blur(20px);
+    color:
+        var(--purple-light);
 
-    box-shadow:
-        0 30px 100px
-        rgba(0,0,0,.35);
+    font-size:
+        12px;
 
-}
+    font-weight:
+        800;
 
-
-.start {
-
-    text-align: center;
-
-    padding:
-        45px 20px;
-
-}
-
-
-.start-icon {
-
-    font-size: 50px;
+    letter-spacing:
+        .5px;
 
     margin-bottom:
         18px;
 
 }
 
+.status-dot {
 
-.start h2 {
+    width:
+        7px;
 
-    font-size: 25px;
+    height:
+        7px;
 
-    margin-bottom:
-        10px;
+    border-radius:
+        50%;
+
+    background:
+        #22c55e;
+
+    box-shadow:
+        0 0 12px
+        #22c55e;
 
 }
 
 
-.start p {
+.logo {
 
-    max-width: 600px;
+    width:
+        78px;
+
+    height:
+        78px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
 
     margin:
-        0 auto 30px;
+        0 auto 20px;
+
+    border-radius:
+        24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #a78bfa,
+            #6d28d9
+        );
+
+    box-shadow:
+        0 25px 80px
+        rgba(139,92,246,.35);
+
+    font-size:
+        22px;
+
+    font-weight:
+        950;
+
+    letter-spacing:
+        -1px;
+
+}
+
+h1 {
+
+    font-size:
+        clamp(
+            34px,
+            7vw,
+            58px
+        );
+
+    line-height:
+        1;
+
+    letter-spacing:
+        -3px;
+
+    margin-bottom:
+        15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 20%,
+            #c4b5fd 60%,
+            #8b5cf6
+        );
+
+    -webkit-background-clip:
+        text;
+
+    background-clip:
+        text;
+
+    color:
+        transparent;
+
+}
+
+.subtitle {
+
+    color:
+        var(--muted);
+
+    font-size:
+        15px;
+
+}
+
+
+/* ==========================================
+   MAIN CARD
+========================================== */
+
+.main-card {
+
+    position:
+        relative;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius:
+        28px;
+
+    background:
+        var(--card);
+
+    backdrop-filter:
+        blur(25px);
+
+    box-shadow:
+        0 40px 120px
+        rgba(0,0,0,.4);
+
+}
+
+.main-card::before {
+
+    content: "";
+
+    position:
+        absolute;
+
+    top:
+        0;
+
+    left:
+        15%;
+
+    width:
+        70%;
+
+    height:
+        1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(167,139,250,.7),
+            transparent
+        );
+
+}
+
+
+/* ==========================================
+   START
+========================================== */
+
+.start {
+
+    padding:
+        75px 25px;
+
+    text-align:
+        center;
+
+}
+
+.start-icon {
+
+    width:
+        82px;
+
+    height:
+        82px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    margin:
+        0 auto 25px;
+
+    border-radius:
+        25px;
+
+    background:
+        rgba(139,92,246,.10);
+
+    border:
+        1px solid
+        rgba(139,92,246,.2);
+
+    font-size:
+        36px;
+
+}
+
+.start h2 {
+
+    font-size:
+        28px;
+
+    margin-bottom:
+        12px;
+
+    letter-spacing:
+        -.7px;
+
+}
+
+.start p {
+
+    max-width:
+        590px;
+
+    margin:
+        auto auto 30px;
 
     color:
         var(--muted);
 
     line-height:
-        1.7;
+        1.8;
 
 }
 
 
+/* ==========================================
+   BUTTON
+========================================== */
+
 .generate {
 
-    width: 100%;
+    position:
+        relative;
 
-    max-width: 350px;
+    overflow:
+        hidden;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        10px;
+
+    min-width:
+        280px;
 
     padding:
-        17px 25px;
+        17px 28px;
 
     border:
-        none;
+        0;
 
     border-radius:
-        13px;
-
-    background:
-
-        linear-gradient(
-            135deg,
-            var(--purple),
-            var(--purple2)
-        );
+        14px;
 
     color:
         white;
 
+    background:
+        linear-gradient(
+            135deg,
+            #8b5cf6,
+            #6d28d9
+        );
+
     font-size:
-        16px;
+        15px;
 
     font-weight:
-        800;
+        850;
 
     cursor:
         pointer;
 
-    transition:
-        .2s;
-
     box-shadow:
-        0 12px 40px
-        rgba(139,92,246,.25);
+        0 18px 50px
+        rgba(109,40,217,.35);
+
+    transition:
+        .25s ease;
 
 }
-
 
 .generate:hover {
 
     transform:
-        translateY(-2px);
+        translateY(-3px);
+
+    box-shadow:
+        0 22px 60px
+        rgba(109,40,217,.45);
 
 }
 
+.generate:active {
+
+    transform:
+        translateY(0);
+
+}
 
 .generate:disabled {
 
     opacity:
-        .55;
+        .6;
 
     cursor:
         wait;
 
-    transform:
-        none;
-
 }
 
+
+/* ==========================================
+   LOADING
+========================================== */
 
 .loading {
 
     display:
         none;
 
+    padding:
+        90px 20px;
+
     text-align:
         center;
 
-    padding:
-        70px 20px;
-
 }
-
 
 .spinner {
 
     width:
-        50px;
+        55px;
 
     height:
-        50px;
+        55px;
 
     margin:
-        0 auto 22px;
+        0 auto 25px;
 
     border:
         4px solid
-        #292933;
+        rgba(255,255,255,.08);
 
     border-top-color:
         var(--purple);
+
+    border-right-color:
+        var(--purple-light);
 
     border-radius:
         50%;
@@ -344,7 +646,6 @@ h1 {
         spin .8s linear infinite;
 
 }
-
 
 @keyframes spin {
 
@@ -355,30 +656,27 @@ h1 {
 
 }
 
-
 .loading h3 {
+
+    font-size:
+        20px;
 
     margin-bottom:
         8px;
 
 }
 
-
 .loading p {
 
     color:
         var(--muted);
 
-    font-size:
-        14px;
-
 }
-
 
 .loading-status {
 
     margin-top:
-        12px;
+        15px;
 
     color:
         var(--purple-light);
@@ -389,15 +687,32 @@ h1 {
 }
 
 
+/* ==========================================
+   RESULT
+========================================== */
+
 .result {
 
     display:
         none;
 
+    padding:
+        25px;
+
 }
 
 
+/* ==========================================
+   PROFILE
+========================================== */
+
 .profile {
+
+    position:
+        relative;
+
+    overflow:
+        hidden;
 
     display:
         flex;
@@ -412,103 +727,153 @@ h1 {
         20px;
 
     padding:
-        22px;
+        25px;
 
     margin-bottom:
-        18px;
+        15px;
 
     border:
         1px solid
-        var(--border);
+        rgba(139,92,246,.20);
 
     border-radius:
-        18px;
+        20px;
 
     background:
-        var(--card2);
+
+        linear-gradient(
+            135deg,
+            rgba(139,92,246,.13),
+            rgba(17,17,25,.5)
+        );
 
 }
 
+.profile::after {
+
+    content: "";
+
+    position:
+        absolute;
+
+    width:
+        150px;
+
+    height:
+        150px;
+
+    right:
+        -80px;
+
+    top:
+        -80px;
+
+    border-radius:
+        50%;
+
+    background:
+        rgba(139,92,246,.15);
+
+    filter:
+        blur(30px);
+
+}
 
 .profile-label {
+
+    color:
+        var(--purple-light);
+
+    font-size:
+        10px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        1.5px;
+
+    margin-bottom:
+        7px;
+
+}
+
+.profile-name {
+
+    font-size:
+        clamp(
+            22px,
+            5vw,
+            30px
+        );
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        -.8px;
+
+}
+
+.profile-age {
 
     color:
         var(--muted);
 
     font-size:
-        11px;
-
-    font-weight:
-        800;
-
-    letter-spacing:
-        1px;
-
-    margin-bottom:
-        6px;
-
-}
-
-
-.profile-name {
-
-    font-size:
-        25px;
-
-    font-weight:
-        850;
-
-}
-
-
-.profile-age {
-
-    color:
-        var(--purple-light);
+        14px;
 
     margin-top:
         5px;
 
-    font-weight:
-        700;
-
 }
-
 
 .copy-all {
 
+    position:
+        relative;
+
+    z-index:
+        2;
+
     padding:
-        12px 18px;
+        12px 17px;
 
     border:
         1px solid
         var(--border);
 
     border-radius:
-        10px;
+        11px;
 
     background:
-        #20202a;
+        rgba(255,255,255,.05);
 
     color:
         white;
 
     font-weight:
-        700;
+        750;
 
     cursor:
         pointer;
 
-}
+    transition:
+        .2s;
 
+}
 
 .copy-all:hover {
 
     background:
-        #2b2b36;
+        rgba(255,255,255,.09);
 
 }
 
+
+/* ==========================================
+   ANSWERS
+========================================== */
 
 .answers {
 
@@ -519,42 +884,42 @@ h1 {
         column;
 
     gap:
-        12px;
+        10px;
 
 }
 
-
 .answer {
-
-    padding:
-        20px;
 
     border:
         1px solid
         var(--border);
 
     border-radius:
-        16px;
+        17px;
 
     background:
-        var(--card);
+        rgba(10,10,15,.45);
 
     transition:
         .2s;
 
-}
+    overflow:
+        hidden;
 
+}
 
 .answer:hover {
 
-    background:
-        var(--card2);
-
     border-color:
-        #3b3b48;
+        rgba(139,92,246,.25);
+
+    background:
+        var(--card-hover);
+
+    transform:
+        translateY(-1px);
 
 }
-
 
 .answer-header {
 
@@ -567,14 +932,10 @@ h1 {
     justify-content:
         space-between;
 
-    gap:
-        15px;
-
-    margin-bottom:
-        10px;
+    padding:
+        17px 19px 8px;
 
 }
-
 
 .answer-number {
 
@@ -582,30 +943,37 @@ h1 {
         var(--purple-light);
 
     font-size:
-        13px;
+        11px;
 
     font-weight:
-        850;
+        900;
+
+    letter-spacing:
+        1px;
 
 }
-
 
 .copy-answer {
 
     border:
-        none;
+        0;
 
     background:
-        none;
+        transparent;
 
     color:
-        var(--muted);
+        #70707d;
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
 
     cursor:
         pointer;
 
 }
-
 
 .copy-answer:hover {
 
@@ -614,111 +982,131 @@ h1 {
 
 }
 
-
 .answer-text {
 
+    padding:
+        0 19px 19px;
+
     color:
-        #d9d9e0;
+        #d7d7df;
 
     font-size:
-        15px;
+        14px;
 
     line-height:
-        1.75;
+        1.8;
 
 }
-
 
 .story {
 
     line-height:
-        1.9;
+        1.95;
 
 }
 
+
+/* ==========================================
+   BOTTOM BUTTONS
+========================================== */
 
 .buttons {
 
     display:
-        flex;
+        grid;
+
+    grid-template-columns:
+        1fr 1fr;
 
     gap:
-        12px;
+        10px;
 
     margin-top:
-        20px;
+        15px;
 
 }
 
-
 .button {
-
-    flex:
-        1;
 
     padding:
         14px;
 
     border:
-        none;
+        1px solid
+        var(--border);
 
     border-radius:
-        11px;
+        12px;
 
     background:
-        #1c1c25;
+        rgba(255,255,255,.04);
 
     color:
         white;
 
     font-weight:
-        750;
+        800;
 
     cursor:
         pointer;
 
-}
-
-
-.button.primary {
-
-    background:
-        var(--purple);
+    transition:
+        .2s;
 
 }
-
 
 .button:hover {
 
-    opacity:
-        .85;
+    background:
+        rgba(255,255,255,.08);
 
 }
 
+.button.primary {
+
+    border-color:
+        transparent;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8b5cf6,
+            #6d28d9
+        );
+
+}
+
+
+/* ==========================================
+   ERROR
+========================================== */
 
 .error {
 
     display:
         none;
 
-    margin-top:
-        18px;
+    margin:
+        18px 25px 25px;
 
     padding:
         16px;
 
     border:
         1px solid
-        rgba(239,68,68,.3);
+        rgba(239,68,68,.2);
 
     border-radius:
-        12px;
+        13px;
 
     background:
-        rgba(239,68,68,.08);
+        rgba(239,68,68,.06);
 
     color:
         #fca5a5;
+
+    font-size:
+        13px;
 
     line-height:
         1.6;
@@ -726,39 +1114,68 @@ h1 {
 }
 
 
-footer {
+/* ==========================================
+   FOOTER
+========================================== */
+
+.footer {
 
     text-align:
         center;
 
+    padding-top:
+        22px;
+
     color:
-        #50505a;
+        #555561;
 
     font-size:
-        12px;
-
-    margin-top:
-        25px;
+        11px;
 
 }
 
 
+/* ==========================================
+   MOBILE
+========================================== */
+
 @media(max-width:650px) {
 
     .container {
+
+        width:
+            calc(100% - 20px);
 
         padding-top:
             30px;
 
     }
 
-    .card {
+    h1 {
 
-        padding:
-            18px;
+        letter-spacing:
+            -2px;
+
+    }
+
+    .main-card {
 
         border-radius:
-            18px;
+            21px;
+
+    }
+
+    .start {
+
+        padding:
+            55px 18px;
+
+    }
+
+    .result {
+
+        padding:
+            12px;
 
     }
 
@@ -781,8 +1198,8 @@ footer {
 
     .buttons {
 
-        flex-direction:
-            column;
+        grid-template-columns:
+            1fr;
 
     }
 
@@ -796,47 +1213,76 @@ footer {
 <body>
 
 
+<div class="background">
+
+    <div class="orb one"></div>
+
+    <div class="orb two"></div>
+
+    <div class="orb three"></div>
+
+</div>
+
+
 <div class="container">
 
 
-    <div class="hero">
+    <header class="header">
+
+        <div class="badge">
+
+            <span class="status-dot"></span>
+
+            GERADOR ONLINE
+
+        </div>
+
 
         <div class="logo">
             MC
         </div>
 
+
         <h1>
-            Meta City Generator
+            Meta City
+            <br>
+            Generator
         </h1>
 
+
         <p class="subtitle">
-            Gere um personagem completo para sua whitelist
+            Crie personagens únicos para sua whitelist
         </p>
 
-    </div>
+    </header>
 
 
-    <div class="card">
+    <main class="main-card">
 
 
-        <div
+        <!-- INÍCIO -->
+
+        <section
             id="start"
             class="start"
         >
 
             <div class="start-icon">
-                ✨
+                ✦
             </div>
 
+
             <h2>
-                Criar novo personagem
+                Pronto para começar?
             </h2>
 
+
             <p>
-                O sistema cria automaticamente
-                nome, idade, respostas e uma
-                história completa para seu personagem.
+                Gere automaticamente um personagem
+                completo com nome, idade, respostas
+                e uma história única para Meta City.
             </p>
+
 
             <button
                 id="generateButton"
@@ -846,35 +1292,42 @@ footer {
                 ✨ Gerar personagem
             </button>
 
-        </div>
+        </section>
 
 
-        <div
+        <!-- LOADING -->
+
+        <section
             id="loading"
             class="loading"
         >
 
             <div class="spinner"></div>
 
+
             <h3>
-                Criando personagem...
+                Criando personagem
             </h3>
 
+
             <p>
-                Aguarde alguns segundos.
+                O Gemini está preparando tudo...
             </p>
+
 
             <div
                 id="loadingStatus"
                 class="loading-status"
             >
-                Conectando ao Gemini...
+                Escolhendo identidade...
             </div>
 
-        </div>
+        </section>
 
 
-        <div
+        <!-- RESULTADO -->
+
+        <section
             id="result"
             class="result"
         >
@@ -889,17 +1342,17 @@ footer {
                         PERSONAGEM GERADO
                     </div>
 
+
                     <div
                         id="name"
                         class="profile-name"
-                    >
-                    </div>
+                    ></div>
+
 
                     <div
                         id="age"
                         class="profile-age"
-                    >
-                    </div>
+                    ></div>
 
                 </div>
 
@@ -927,8 +1380,9 @@ footer {
                     class="button primary"
                     onclick="generateCharacter()"
                 >
-                    🔄 Gerar outro
+                    ✦ Gerar outro
                 </button>
+
 
                 <button
                     class="button"
@@ -940,8 +1394,10 @@ footer {
             </div>
 
 
-        </div>
+        </section>
 
+
+        <!-- ERRO -->
 
         <div
             id="error"
@@ -949,11 +1405,13 @@ footer {
         ></div>
 
 
-    </div>
+    </main>
 
 
-    <footer>
-        Meta City Generator
+    <footer class="footer">
+
+        Meta City Generator • Sistema de geração de personagens
+
     </footer>
 
 
@@ -962,36 +1420,39 @@ footer {
 
 <script>
 
-
 let currentCharacter = null;
 
 
-async function generateCharacter() {
+// =====================================================
+// GERAR
+// =====================================================
 
+async function generateCharacter() {
 
     const start =
         document.getElementById(
             "start"
         );
 
-
     const loading =
         document.getElementById(
             "loading"
         );
-
 
     const result =
         document.getElementById(
             "result"
         );
 
-
     const error =
         document.getElementById(
             "error"
         );
 
+    const status =
+        document.getElementById(
+            "loadingStatus"
+        );
 
     const button =
         document.getElementById(
@@ -999,23 +1460,14 @@ async function generateCharacter() {
         );
 
 
-    const status =
-        document.getElementById(
-            "loadingStatus"
-        );
-
-
     start.style.display =
         "none";
-
 
     result.style.display =
         "none";
 
-
     error.style.display =
         "none";
-
 
     loading.style.display =
         "block";
@@ -1029,17 +1481,48 @@ async function generateCharacter() {
     }
 
 
-    try {
+    const mensagens = [
+
+        "Escolhendo identidade...",
+
+        "Criando personalidade...",
+
+        "Preparando respostas...",
+
+        "Escrevendo história...",
+
+        "Finalizando personagem..."
+
+    ];
 
 
-        status.textContent =
-            "Conectando ao Gemini...";
+    let mensagemIndex = 0;
 
 
-        console.log(
-            "Enviando solicitação..."
+    const intervalo =
+        setInterval(
+            () => {
+
+                mensagemIndex++;
+
+                if (
+                    mensagemIndex <
+                    mensagens.length
+                ) {
+
+                    status.textContent =
+                        mensagens[
+                            mensagemIndex
+                        ];
+
+                }
+
+            },
+            1500
         );
 
+
+    try {
 
         const response =
             await fetch(
@@ -1062,20 +1545,8 @@ async function generateCharacter() {
             );
 
 
-        console.log(
-            "Status:",
-            response.status
-        );
-
-
         const data =
             await response.json();
-
-
-        console.log(
-            "Resposta:",
-            data
-        );
 
 
         if (!response.ok) {
@@ -1115,9 +1586,7 @@ async function generateCharacter() {
 
     } catch (err) {
 
-
         console.error(
-            "ERRO:",
             err
         );
 
@@ -1140,6 +1609,10 @@ async function generateCharacter() {
 
     } finally {
 
+        clearInterval(
+            intervalo
+        );
+
 
         loading.style.display =
             "none";
@@ -1157,10 +1630,13 @@ async function generateCharacter() {
 }
 
 
+// =====================================================
+// RENDER
+// =====================================================
+
 function renderCharacter(
     data
 ) {
-
 
     document.getElementById(
         "name"
@@ -1171,8 +1647,7 @@ function renderCharacter(
     document.getElementById(
         "age"
     ).textContent =
-        data.age +
-        " anos";
+        `${data.age} anos`;
 
 
     const container =
@@ -1188,29 +1663,28 @@ function renderCharacter(
     data.answers.forEach(
         (answer, index) => {
 
-
-            const item =
+            const card =
                 document.createElement(
-                    "div"
+                    "article"
                 );
 
 
-            item.className =
+            card.className =
                 "answer";
 
 
-            const number =
+            const titulo =
                 index === 9
-                    ? "10. HISTÓRIA"
-                    : `${index + 1}. RESPOSTA`;
+                    ? "10 • HISTÓRIA"
+                    : `${index + 1} • RESPOSTA`;
 
 
-            item.innerHTML = `
+            card.innerHTML = `
 
                 <div class="answer-header">
 
                     <span class="answer-number">
-                        ${number}
+                        ${titulo}
                     </span>
 
                     <button
@@ -1222,13 +1696,11 @@ function renderCharacter(
 
                 </div>
 
-                <div
-                    class="answer-text ${
-                        index === 9
-                            ? "story"
-                            : ""
-                    }"
-                >
+                <div class="answer-text ${
+                    index === 9
+                        ? "story"
+                        : ""
+                }">
                     ${escapeHTML(answer)}
                 </div>
 
@@ -1236,9 +1708,8 @@ function renderCharacter(
 
 
             container.appendChild(
-                item
+                card
             );
-
 
         }
     );
@@ -1263,10 +1734,13 @@ function renderCharacter(
 }
 
 
+// =====================================================
+// ESCAPAR HTML
+// =====================================================
+
 function escapeHTML(
     text
 ) {
-
 
     const div =
         document.createElement(
@@ -1278,83 +1752,105 @@ function escapeHTML(
         text;
 
 
-    return div.innerHTML
-        .replace(
-            /\n/g,
-            "<br>"
-        );
+    return div.innerHTML.replace(
+        /\n/g,
+        "<br>"
+    );
 
 }
 
+
+// =====================================================
+// COPIAR UMA
+// =====================================================
 
 async function copyAnswer(
     index
 ) {
 
-
     if (!currentCharacter) {
-
         return;
-
     }
 
 
-    await navigator.clipboard.writeText(
-        currentCharacter.answers[index]
-    );
+    try {
+
+        await navigator.clipboard.writeText(
+            currentCharacter.answers[index]
+        );
 
 
-    notifyCopied();
+        showCopied();
+
+    } catch {
+
+        alert(
+            "Não foi possível copiar."
+        );
+
+    }
 
 }
 
 
+// =====================================================
+// COPIAR TUDO
+// =====================================================
+
 async function copyAll() {
 
-
     if (!currentCharacter) {
-
         return;
-
     }
 
 
-    let text =
-        "";
+    let texto = "";
 
 
-    text +=
+    texto +=
         `Nome: ${currentCharacter.name}\n`;
 
-
-    text +=
+    texto +=
         `Idade: ${currentCharacter.age} anos\n\n`;
 
 
     currentCharacter.answers.forEach(
         (answer, index) => {
 
-            text +=
+            texto +=
                 `${index + 1}. ${answer}\n\n`;
 
         }
     );
 
 
-    await navigator.clipboard.writeText(
-        text
-    );
+    try {
+
+        await navigator.clipboard.writeText(
+            texto
+        );
 
 
-    notifyCopied();
+        showCopied();
+
+    } catch {
+
+        alert(
+            "Não foi possível copiar."
+        );
+
+    }
 
 }
 
 
-function notifyCopied() {
+// =====================================================
+// COPIADO
+// =====================================================
 
+function showCopied() {
 
-    const oldTitle =
+    const original =
         document.title;
 
 
@@ -1366,17 +1862,15 @@ function notifyCopied() {
         () => {
 
             document.title =
-                oldTitle;
+                original;
 
         },
-        1200
+        1300
     );
 
 }
 
-
 </script>
-
 
 </body>
 
