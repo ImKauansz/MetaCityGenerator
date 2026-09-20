@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Meta City Generator</title>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+
+body {
+
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #1b1230,
+            #0b0b0f 45%
+        );
+
+    color: #ffffff;
+
+}
+
+
+.container {
+
+    width: 92%;
+
+    max-width: 1050px;
+
+    margin:
+        35px auto;
+
+}
+
+
+header {
+
+    text-align: center;
+
+    margin-bottom: 30px;
+
+}
+
+
+header h1 {
+
+    font-size: 38px;
+
+    color: #9b6cff;
+
+    margin-bottom: 8px;
+
+}
+
+
+header p {
+
+    color: #999;
+
+}
+
+
+.card {
+
+    background: #141419;
+
+    border:
+        1px solid #292933;
+
+    border-radius: 16px;
+
+    padding: 25px;
+
+    margin-bottom: 18px;
+
+    box-shadow:
+        0 10px 35px
+        rgba(0,0,0,.25);
+
+}
+
+
+.card h2 {
+
+    margin-bottom: 20px;
+
+}
+
+
+.grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 16px;
+
+}
+
+
+label {
+
+    display: block;
+
+    color: #ccc;
+
+    font-size: 14px;
+
+    margin-bottom: 7px;
+
+}
+
+
+input,
+textarea,
+select {
+
+    width: 100%;
+
+    background: #0d0d12;
+
+    border:
+        1px solid #30303a;
+
+    color: #fff;
+
+    padding: 13px;
+
+    border-radius: 9px;
+
+    outline: none;
+
+    margin-bottom: 16px;
+
+}
+
+
+input:focus,
+textarea:focus,
+select:focus {
+
+    border-color: #8b5cf6;
+
+}
+
+
+textarea {
+
+    min-height: 90px;
+
+    resize: vertical;
+
+    line-height: 1.5;
+
+}
+
+
+.question {
+
+    background: #101015;
+
+    border:
+        1px solid #292932;
+
+    border-radius: 12px;
+
+    padding: 18px;
+
+    margin-bottom: 14px;
+
+}
+
+
+.question-number {
+
+    color: #9b6cff;
+
+    font-weight: bold;
+
+    margin-bottom: 7px;
+
+}
+
+
+.question-title {
+
+    font-weight: bold;
+
+    line-height: 1.5;
+
+    margin-bottom: 12px;
+
+}
+
+
+button {
+
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 13px 18px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    transition: .2s;
+
+}
+
+
+.primary {
+
+    width: 100%;
+
+    background: #8b5cf6;
+
+    color: white;
+
+    font-size: 16px;
+
+}
+
+
+.primary:hover {
+
+    background: #7443d8;
+
+}
+
+
+.primary:disabled {
+
+    opacity: .6;
+
+    cursor: wait;
+
+}
+
+
+.secondary {
+
+    background: #282832;
+
+    color: white;
+
+    margin-right: 8px;
+
+    margin-top: 8px;
+
+}
+
+
+.secondary:hover {
+
+    background: #363640;
+
+}
+
+
+.result {
+
+    display: none;
+
+}
+
+
+.answer {
+
+    background: #0d0d12;
+
+    border:
+        1px solid #292932;
+
+    border-radius: 10px;
+
+    padding: 16px;
+
+    margin-bottom: 12px;
+
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+
+}
+
+
+.answer strong {
+
+    display: block;
+
+    color: #9b6cff;
+
+    margin-bottom: 8px;
+
+}
+
+
+.status {
+
+    display: none;
+
+    text-align: center;
+
+    color: #aaa;
+
+    margin-top: 14px;
+
+}
+
+
+.error {
+
+    color: #ff7070;
+
+}
+
+
+.warning {
+
+    background: #211b0b;
+
+    border:
+        1px solid #665218;
+
+    color: #e6d37d;
+
+    padding: 14px;
+
+    border-radius: 9px;
+
+    margin-bottom: 18px;
+
+    line-height: 1.5;
+
+}
+
+
+@media(max-width:700px) {
+
+    .grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    header h1 {
+
+        font-size: 29px;
+
+    }
+
+
+    .container {
+
+        width: 95%;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<header>
+
+<h1>
+Meta City Generator
+</h1>
+
+<p>
+Gerador de respostas com Gemini
+</p>
+
+</header>
+
+
+
+<div class="warning">
+
+<b>Importante:</b>
+
+Use informações verdadeiras.
+A IA apenas ajuda a deixar suas respostas
+mais naturais e organizadas.
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+Dados principais
+</h2>
+
+
+<div class="grid">
+
+
+<div>
+
+<label>
+Nome real
+</label>
+
+<input
+    id="nome"
+    placeholder="Ex.: João Guilherme"
+>
+
+</div>
+
+
+
+<div>
+
+<label>
+Idade
+</label>
+
+<input
+    id="idade"
+    type="number"
+    placeholder="Ex.: 19"
+>
+
+</div>
+
+
+</div>
+
+
+
+<label>
+Motivo de ir para Meta City
+</label>
+
+<textarea
+    id="motivo"
+    placeholder="Digite o motivo..."
+></textarea>
+
+
+</div>
+
+
+
+<div class="card">
+
+
+<h2>
+Respostas-base
+</h2>
+
+
+
+<div class="question">
+
+<div class="question-number">
+01
+</div>
+
+<div class="question-title">
+
+Qual seu nome real?
+(quem está por trás do computador)
+
+</div>
+
+<textarea id="q1">
+João Guilherme
+</textarea>
+
+</div>
+
+
+
+<div class="question">
+
+<div class="question-number">
+02
+</div>
+
+<div class="question-title">
+
+Quantos anos você tem?
+
+</div>
+
+<textarea id="q2">
+19
+</textarea>
+
+</div>
+
+
+
+<div class="question">
+
+<div class="question-number">
+03
+</div>
+
+<div class="question-title">
+
+Você tem conhecimento de que o abuso de bugs constitui uma infração grave às regras?
+
+</div>
+
+<textarea id="q3">
+Sim, tenho conhecimento e sei que qualquer bug deve ser reportado à equipe responsável.
+</textarea>
+
+</div>
+
+
+
+<div class="question">
+
+<div class="question-number">
+04
+</div>
+
+<div class="question-title">
+
+O que é Metagaming?
+Dê um exemplo.
+
+</div>
+
+<textarea id="q4">
+MetaGaming é utilizar informações obtidas fora do FiveM e levar para dentro do RP. Por exemplo, ver uma live para descobrir onde uma pessoa está e usar essa informação dentro do jogo.
+</textarea>
+
+</div>
+
+
+
+<div class="question">
+
+<div class="question-number">
+05
+</div>
+
+<div class="question-title">
+
+O que é Powergaming?
+Dê um exemplo.
+
+</div>
+
+<textarea id="q5">
+Powergaming é fazer coisas impossíveis ou irreais na vida real, como subir escadas ou lugares impossíveis com carros esportivos.
+</textarea>
+
+</div>
+
+
+
+<div class="question">
+
+<div class="question-number">
+06
+</div>
+
+<div class="question-title">
+
+O que significa "Amor à Vida"?
+
+</div>
+
+<textarea id="q6">
+É valorizar a própria vida como algo único e importante.
+</textarea>
+
+</div>
+
+
+
+<div class="question">
+
+<div class="question-number">
+07
+</div>
+
+<div class="question-title">
+
+O que é Combat Logging?
+
+</div>
+
+<textarea id="q7">
+É deslogar no meio de uma ação para obter algum tipo de vantagem.
+</textarea>
+
+</div>
+
+
+
+<div class="question">
+
+<div class="question-number">
+08
+</div>
+
+<div class="question-title">
+
+Você participa ou já entrou em algum servidor de hack/cheat?
+
+</div>
+
+<textarea id="q8">
+Não.
+</textarea>
+
+</div>
+
+
+
+<div class="question">
+
+<div class="question-number">
+09
+</div>
+
+<div class="question-title">
+
+O que é uma Safe Zone (Zona Segura)?
+
+</div>
+
+<textarea id="q9">
+É uma área onde determinadas ações são proibidas pelas regras do servidor.
+</textarea>
+
+</div>
+
+
+
+<div class="question">
+
+<div class="question-number">
+10
+</div>
+
+<div class="question-title">
+
+Motivo de ir para Meta City
+
+</div>
+
+<textarea id="q10"></textarea>
+
+</div>
+
+
+</div>
+
+
+
+<div class="card">
+
+
+<h2>
+Configuração
+</h2>
+
+
+<label>
+Nível de alteração
+</label>
+
+
+<select id="nivel">
+
+<option value="leve">
+Leve — pequenas alterações
+</option>
+
+<option
+    value="medio"
+    selected
+>
+Médio — natural
+</option>
+
+<option value="alto">
+Alto — estrutura diferente
+</option>
+
+</select>
+
+
+
+<button
+    class="primary"
+    id="generateButton"
+    onclick="gerarRespostas()"
+>
+
+✨ Gerar com Gemini
+
+</button>
+
+
+<div
+    class="status"
+    id="status"
+>
+Gerando respostas...
+</div>
+
+
+</div>
+
+
+
+<div
+    class="card result"
+    id="resultado"
+>
+
+
+<h2>
+Respostas geradas
+</h2>
+
+
+<div id="respostas"></div>
+
+
+<button
+    class="secondary"
+    onclick="copiarTudo()"
+>
+📋 Copiar tudo
+</button>
+
+
+<button
+    class="secondary"
+    onclick="gerarRespostas()"
+>
+🔄 Gerar novamente
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+function valor(id) {
+
+    return document
+        .getElementById(id)
+        .value
+        .trim();
+
+}
+
+
+
+async function gerarRespostas() {
+
+
+    const button =
+        document.getElementById(
+            "generateButton"
+        );
+
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+
+    button.disabled = true;
+
+    status.style.display = "block";
+
+    status.className = "status";
+
+    status.textContent =
+        "✨ O Gemini está gerando suas respostas...";
+
+
+
+    const perguntas = [
+
+        {
+            question:
+                "Qual seu nome real? (quem está por trás do computador)",
+
+            answer:
+                valor("q1") ||
+                valor("nome")
+        },
+
+
+        {
+            question:
+                "Quantos anos você tem?",
+
+            answer:
+                valor("q2") ||
+                valor("idade")
+        },
+
+
+        {
+            question:
+                "Você tem conhecimento de que o abuso de bugs constitui uma infração grave às regras?",
+
+            answer:
+                valor("q3")
+        },
+
+
+        {
+            question:
+                "O que é Metagaming? Dê um exemplo.",
+
+            answer:
+                valor("q4")
+        },
+
+
+        {
+            question:
+                "O que é Powergaming? Dê um exemplo.",
+
+            answer:
+                valor("q5")
+        },
+
+
+        {
+            question:
+                'O que significa "Amor à Vida"?',
+
+            answer:
+                valor("q6")
+        },
+
+
+        {
+            question:
+                "O que é Combat Logging?",
+
+            answer:
+                valor("q7")
+        },
+
+
+        {
+            question:
+                "Você participa ou já entrou em algum servidor de hack/cheat?",
+
+            answer:
+                valor("q8")
+        },
+
+
+        {
+            question:
+                "O que é uma Safe Zone (Zona Segura)?",
+
+            answer:
+                valor("q9")
+        },
+
+
+        {
+            question:
+                "Motivo de ir para Meta City",
+
+            answer:
+                valor("motivo") ||
+                valor("q10")
+        }
+
+    ];
+
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                "/api/generate",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            perguntas:
+
+                                perguntas,
+
+                            nivel:
+
+                                valor("nivel")
+
+                        })
+
+                }
+            );
+
+
+
+        const data =
+            await response.json();
+
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Erro desconhecido."
+            );
+
+        }
+
+
+
+        const container =
+            document.getElementById(
+                "respostas"
+            );
+
+
+        container.innerHTML = "";
+
+
+
+        data.answers.forEach(
+            (answer, index) => {
+
+
+                const box =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                box.className =
+                    "answer";
+
+
+                const title =
+                    document.createElement(
+                        "strong"
+                    );
+
+
+                title.textContent =
+                    `${index + 1}. ${perguntas[index].question}`;
+
+
+                const text =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                text.textContent =
+                    answer;
+
+
+                box.appendChild(title);
+
+                box.appendChild(text);
+
+                container.appendChild(box);
+
+            }
+        );
+
+
+
+        document
+            .getElementById("resultado")
+            .style.display = "block";
+
+
+        document
+            .getElementById("resultado")
+            .scrollIntoView({
+                behavior: "smooth"
+            });
+
+
+        status.style.display =
+            "none";
+
+
+    } catch (error) {
+
+
+        console.error(error);
+
+
+        status.className =
+            "status error";
+
+
+        status.textContent =
+            "❌ " + error.message;
+
+
+    } finally {
+
+
+        button.disabled =
+            false;
+
+    }
+
+}
+
+
+
+function copiarTudo() {
+
+
+    const respostas =
+        document.querySelectorAll(
+            ".answer"
+        );
+
+
+    let texto = "";
+
+
+    respostas.forEach(
+        item => {
+
+            texto +=
+                item.innerText +
+                "\n\n";
+
+        }
+    );
+
+
+    navigator.clipboard
+        .writeText(
+            texto.trim()
+        );
+
+
+    alert(
+        "✅ Respostas copiadas!"
+    );
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
