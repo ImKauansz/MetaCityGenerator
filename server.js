@@ -8,11 +8,9 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-// Modelo principal
 const PRIMARY_MODEL =
     process.env.GEMINI_MODEL || "gemini-3.6-flash";
 
-// Modelo reserva
 const FALLBACK_MODEL =
     process.env.GEMINI_FALLBACK_MODEL ||
     "gemini-3.5-flash-lite";
@@ -20,28 +18,31 @@ const FALLBACK_MODEL =
 app.use(express.json({ limit: "100kb" }));
 app.use(express.static("public"));
 
+// =====================================================
+// CONFIGURAÇÃO
+// =====================================================
 
+console.log("");
 console.log("==========================================");
-console.log("       META CITY GENERATOR");
+console.log("         META CITY GENERATOR");
 console.log("==========================================");
 console.log("Porta:", PORT);
 console.log("Modelo principal:", PRIMARY_MODEL);
 console.log("Modelo reserva:", FALLBACK_MODEL);
 console.log(
     "API Key:",
-    process.env.GEMINI_API_KEY ? "CONFIGURADA" : "NÃO CONFIGURADA"
+    process.env.GEMINI_API_KEY
+        ? "CONFIGURADA"
+        : "NÃO CONFIGURADA"
 );
 console.log("==========================================");
-
+console.log("");
 
 if (!process.env.GEMINI_API_KEY) {
-
     console.error(
         "ERRO: GEMINI_API_KEY não configurada."
     );
-
 }
-
 
 const ai = process.env.GEMINI_API_KEY
     ? new GoogleGenAI({
@@ -50,70 +51,242 @@ const ai = process.env.GEMINI_API_KEY
     : null;
 
 
-// ==========================================
-// STATUS
-// ==========================================
+// =====================================================
+// BANCO DE NOMES
+// =====================================================
 
-app.get("/api/status", (req, res) => {
+const nomes = [
+    "Gabriel Henrique",
+    "Lucas Rafael",
+    "João Victor",
+    "Pedro Henrique",
+    "Carlos Eduardo",
+    "Rafael Augusto",
+    "Gustavo Henrique",
+    "Matheus Gabriel",
+    "Felipe Augusto",
+    "Bruno Henrique",
+    "Leonardo Rafael",
+    "Caio Vinícius",
+    "Vinícius Gabriel",
+    "André Luiz",
+    "Diego Henrique",
+    "Thiago Martins",
+    "Eduardo Rafael",
+    "Arthur Miguel",
+    "Miguel Augusto",
+    "Samuel Henrique",
+    "Nicolas Rafael",
+    "Henrique Gabriel",
+    "Murilo Augusto",
+    "Ryan Gabriel",
+    "Luiz Fernando",
+    "Daniel Henrique",
+    "Alexandre Lucas",
+    "Guilherme Augusto",
+    "Wesley Gabriel",
+    "Igor Henrique",
+    "Fernando Augusto",
+    "Victor Hugo",
+    "Júlio César",
+    "Marcelo Henrique",
+    "Renan Gabriel",
+    "Vitor Rafael",
+    "Diego Lucas",
+    "Cauã Henrique",
+    "Breno Gabriel",
+    "Heitor Gabriel",
+    "Enrico Rafael",
+    "Davi Henrique",
+    "Otávio Lucas",
+    "Isaac Gabriel",
+    "Luan Henrique",
+    "Yuri Rafael",
+    "Emanuel Lucas",
+    "Benjamin Gabriel",
+    "Nathan Henrique"
+];
 
-    res.json({
+const sobrenomes = [
+    "Almeida",
+    "Barbosa",
+    "Carvalho",
+    "Costa",
+    "Dias",
+    "Ferreira",
+    "Gomes",
+    "Lima",
+    "Martins",
+    "Mendes",
+    "Moreira",
+    "Nascimento",
+    "Oliveira",
+    "Pereira",
+    "Ramos",
+    "Rocha",
+    "Rodrigues",
+    "Santos",
+    "Silva",
+    "Souza",
+    "Teixeira",
+    "Vieira",
+    "Araújo",
+    "Batista",
+    "Campos",
+    "Cardoso",
+    "Castro",
+    "Cavalcanti",
+    "Correia",
+    "Duarte",
+    "Farias",
+    "Freitas",
+    "Macedo",
+    "Monteiro",
+    "Nogueira",
+    "Pinto",
+    "Rezende",
+    "Santana",
+    "Tavares",
+    "Vasconcelos"
+];
 
-        online: true,
 
-        primaryModel:
-            PRIMARY_MODEL,
+// =====================================================
+// MEMÓRIA DE NOMES RECENTES
+// =====================================================
 
-        fallbackModel:
-            FALLBACK_MODEL,
+const nomesRecentes = [];
 
-        apiKeyConfigured:
-            !!process.env.GEMINI_API_KEY
+function gerarNome() {
 
-    });
+    let nomeCompleto = "";
 
-});
+    for (let tentativa = 0; tentativa < 50; tentativa++) {
+
+        const nomeBase =
+            nomes[
+                Math.floor(
+                    Math.random() * nomes.length
+                )
+            ];
+
+        const sobrenome1 =
+            sobrenomes[
+                Math.floor(
+                    Math.random() * sobrenomes.length
+                )
+            ];
+
+        let sobrenome2 =
+            sobrenomes[
+                Math.floor(
+                    Math.random() * sobrenomes.length
+                )
+            ];
+
+        while (sobrenome2 === sobrenome1) {
+
+            sobrenome2 =
+                sobrenomes[
+                    Math.floor(
+                        Math.random() * sobrenomes.length
+                    )
+                ];
+
+        }
+
+        nomeCompleto =
+            `${nomeBase} ${sobrenome1} ${sobrenome2}`;
+
+        if (
+            !nomesRecentes.includes(
+                nomeCompleto
+            )
+        ) {
+            break;
+        }
+    }
+
+    nomesRecentes.push(nomeCompleto);
+
+    if (nomesRecentes.length > 30) {
+        nomesRecentes.shift();
+    }
+
+    return nomeCompleto;
+}
 
 
-// ==========================================
+// =====================================================
+// ID ÚNICO DA GERAÇÃO
+// =====================================================
+
+function gerarSeed() {
+
+    return Math.floor(
+        Math.random() * 999999999
+    );
+
+}
+
+
+// =====================================================
 // PROMPT
-// ==========================================
+// =====================================================
 
-function createPrompt() {      const seed = Math.floor(         Math.random() * 999999999     );      const nomes = [         "Gabriel Henrique",         "Lucas Rafael",         "João Victor",         "Pedro Henrique",         "Carlos Eduardo",         "Rafael Augusto",         "Gustavo Henrique",         "Matheus Gabriel",         "Felipe Augusto",         "Bruno Henrique",         "Leonardo Rafael",         "Caio Vinícius",         "Vinícius Gabriel",         "André Luiz",         "Diego Henrique",         "Thiago Martins",         "Eduardo Rafael",         "Arthur Miguel",         "Miguel Augusto",         "Enzo Gabriel",         "Samuel Henrique",         "Nicolas Rafael",         "Henrique Gabriel",         "Murilo Augusto",         "Ryan Gabriel",         "Luiz Fernando",         "Daniel Henrique",         "Alexandre Lucas",         "Guilherme Augusto",         "Wesley Gabriel",         "Igor Henrique",         "Fernando Augusto",         "Victor Hugo",         "Júlio César",         "Marcelo Henrique",         "Renan Gabriel",         "Vitor Rafael",         "Diego Lucas",         "Cauã Henrique",         "Breno Gabriel"     ];      const sobrenomes = [         "Almeida",         "Barbosa",         "Carvalho",         "Costa",         "Dias",         "Ferreira",         "Gomes",         "Lima",         "Martins",         "Mendes",         "Moreira",         "Nascimento",         "Oliveira",         "Pereira",         "Ramos",         "Rocha",         "Rodrigues",         "Santos",         "Silva",         "Souza",         "Teixeira",         "Vieira",         "Araújo",         "Batista",         "Campos",         "Cardoso",         "Castro",         "Cavalcanti",         "Correia",         "Duarte",         "Farias",         "Freitas",         "Macedo",         "Monteiro",         "Nogueira",         "Pinto",         "Rezende",         "Santana",         "Tavares",         "Vasconcelos"     ];       // Usa uma combinação diferente a cada geração     const nomeBase =         nomes[             Math.floor(                 Math.random() * nomes.length             )         ];      const sobrenome1 =         sobrenomes[             Math.floor(                 Math.random() * sobrenomes.length             )         ];      let sobrenome2 =         sobrenomes[             Math.floor(                 Math.random() * sobrenomes.length             )         ];       // Evita sobrenome duplicado     while (         sobrenome2 === sobrenome1     ) {          sobrenome2 =             sobrenomes[                 Math.floor(                     Math.random() * sobrenomes.length                 )             ];      }       const nomeSugerido =         `${nomeBase} ${sobrenome1} ${sobrenome2}`;       return `  Você é responsável por criar personagens FICTÍCIOS diferentes para uma whitelist de GTA RP/FiveM chamada Meta City.  SEED ÚNICA DESTA GERAÇÃO: ${seed}  NOME SUGERIDO PARA ESTA GERAÇÃO: ${nomeSugerido}  IMPORTANTE:  O nome sugerido acima deve ser usado como base para o personagem desta geração.  Não use nomes de personagens gerados anteriormente.  Não use sempre nomes como: "Matheus Silva de Oliveira".  O sistema precisa variar os nomes.  Pode usar o nome sugerido exatamente ou fazer pequenas alterações naturais, mas NÃO repita nomes anteriores.  Crie um personagem completo.  O personagem deve possuir:  - Nome brasileiro fictício - Idade entre 18 e 35 anos - Personalidade - Passado - Objetivos - História de vida  TODAS as respostas precisam pertencer ao MESMO personagem.  O nome e a idade precisam ser exatamente os mesmos em todas as respostas.  Escreva em português brasileiro natural.  Não use emojis.  Não diga que o personagem foi criado por IA.  Não mencione este prompt.  Evite respostas excessivamente formais.   ========================================== PERGUNTAS ==========================================  1. Qual seu nome real? (quem está por trás do computador)  2. Quantos anos você tem?  3. Você tem conhecimento de que o abuso de bugs (falhas do jogo) constitui uma infração grave às regras, e que, ao identificar qualquer bug, é sua obrigação reportá-lo à equipe responsável, em vez de utilizá-lo?  4. O que é Metagaming? Dê um exemplo.  5. O que é Powergaming? Dê um exemplo.  6. O que significa "Amor à Vida"?  7. O que é Combat Logging?  8. Você participa ou já entrou em algum servidor de hack/cheat (aimbot, mod menu, wallhack etc.)? Seja honesto.  9. O que é uma Safe Zone (Zona Segura)?  10. Motivo de ir para Meta City.   ========================================== REGRAS ==========================================  RESPOSTA 1:  Use o nome do personagem criado para esta geração.  RESPOSTA 2:  Use a idade criada para o personagem.  RESPOSTA 3:  Responda SIM e mostre que entende que bugs devem ser reportados e não utilizados.  RESPOSTA 4:  Explique Metagaming de forma simples e dê um exemplo envolvendo informação obtida fora do RP.  RESPOSTA 5:  Explique Powergaming de forma simples e dê um exemplo de algo impossível ou exagerado dentro do RP.  RESPOSTA 6:  Explique Amor à Vida de forma simples.  RESPOSTA 7:  Explique Combat Logging de forma simples.  RESPOSTA 8:  Responda NÃO.  RESPOSTA 9:  Explique Safe Zone de maneira simples.  RESPOSTA 10:  Crie uma HISTÓRIA COMPLETA do personagem.  A história deve ser escrita em PRIMEIRA PESSOA.  Faça 3 a 5 parágrafos.  Conte:  - Quem é o personagem - Onde cresceu - Infância - Juventude - Dificuldades - Problemas que enfrentou - Decisões erradas - O que fez ele querer mudar - Por que foi para Meta City - O que pretende fazer na cidade - Seus objetivos futuros  A história precisa ser diferente em cada geração.  Não faça uma história genérica.  Varie:  - profissão desejada - cidade de origem - família - dificuldades - personalidade - objetivos - acontecimentos do passado  Não escreva sempre que o personagem quer ser motorista.  Crie histórias naturais e diferentes.   ========================================== FORMATO ==========================================  Retorne SOMENTE JSON válido.  {     "name": "Nome completo",     "age": 24,     "answers": [         "Resposta 1",         "Resposta 2",         "Resposta 3",         "Resposta 4",         "Resposta 5",         "Resposta 6",         "Resposta 7",         "Resposta 8",         "Resposta 9",         "Resposta 10"     ] }  `; }
+function criarPrompt(nome, seed) {
 
     return `
 
-Crie um personagem FICTÍCIO completo para uma
-whitelist de GTA RP/FiveM chamada Meta City.
+Você está criando um personagem FICTÍCIO para
+uma whitelist de GTA RP/FiveM chamada Meta City.
 
-O personagem deve ser totalmente inventado.
+Esta é uma nova geração de personagem.
 
-Crie sozinho:
+IDENTIDADE DESTA GERAÇÃO:
 
-- Nome brasileiro fictício
-- Idade entre 18 e 35 anos
-- Personalidade
-- Passado
-- Objetivos
-- História de vida
+Nome obrigatório:
+${nome}
 
-TODAS as respostas devem pertencer ao MESMO personagem.
+Seed desta geração:
+${seed}
 
-O nome e a idade precisam permanecer exatamente
-iguais em todas as respostas.
+O nome acima é OBRIGATÓRIO.
+
+Use exatamente:
+
+${nome}
+
+Não altere o nome.
+
+Não crie outro nome.
+
+Não use "Matheus Silva de Oliveira".
+
+Não use nomes de gerações anteriores.
+
+O personagem deve ter entre 18 e 35 anos.
+
+Escolha uma idade aleatória dentro dessa faixa.
+
+Todas as respostas precisam pertencer ao mesmo personagem.
 
 Escreva em português brasileiro natural.
 
 Não use emojis.
 
-Não diga que foi criado por IA.
+Não diga que o personagem foi criado por IA.
 
 Não mencione este prompt.
 
-Evite respostas excessivamente formais.
+Não faça respostas excessivamente formais.
 
-==========================================
+Cada geração deve ser diferente.
+
+
+==================================================
 PERGUNTAS
-==========================================
+==================================================
 
 1. Qual seu nome real? (quem está por trás do computador)
 
@@ -122,8 +295,8 @@ PERGUNTAS
 3. Você tem conhecimento de que o abuso de bugs
 (falhas do jogo) constitui uma infração grave às
 regras, e que, ao identificar qualquer bug, é sua
-obrigação reportá-lo à equipe responsável, em vez
-de utilizá-lo?
+obrigação reportá-lo à equipe responsável,
+em vez de utilizá-lo?
 
 4. O que é Metagaming? Dê um exemplo.
 
@@ -141,83 +314,143 @@ Seja honesto.
 
 10. Motivo de ir para Meta City.
 
-==========================================
-REGRAS
-==========================================
 
-1:
-Use o nome fictício criado.
+==================================================
+REGRAS DAS RESPOSTAS
+==================================================
 
-2:
-Use a idade fictícia criada.
+RESPOSTA 1:
 
-3:
-Responda SIM e mostre que entende que bugs
-devem ser reportados e não utilizados.
+Use exatamente o nome:
 
-4:
-Explique Metagaming de forma simples e dê
-um exemplo de informação obtida fora do RP,
-como uma live ou Discord.
+${nome}
 
-5:
-Explique Powergaming de forma simples e dê
-um exemplo de algo impossível ou exagerado
+
+RESPOSTA 2:
+
+Escolha uma idade entre 18 e 35 anos.
+
+Use essa mesma idade na resposta.
+
+
+RESPOSTA 3:
+
+Responda SIM.
+
+Explique que bugs devem ser reportados e não
+utilizados para obter vantagem.
+
+
+RESPOSTA 4:
+
+Explique Metagaming de maneira simples.
+
+Dê um exemplo de alguém usando uma informação
+obtida fora do RP, como uma live, Discord ou
+conversa externa.
+
+
+RESPOSTA 5:
+
+Explique Powergaming de maneira simples.
+
+Dê um exemplo de algo impossível ou exagerado
 dentro do RP.
 
-6:
-Explique Amor à Vida de forma simples,
-mostrando que o personagem valoriza sua vida.
 
-7:
-Explique Combat Logging de forma simples,
-mostrando que é sair do servidor durante uma
-situação de RP para evitar consequências.
+RESPOSTA 6:
 
-8:
+Explique Amor à Vida de maneira simples.
+
+Mostre que o personagem valoriza sua vida.
+
+
+RESPOSTA 7:
+
+Explique Combat Logging de maneira simples.
+
+
+RESPOSTA 8:
+
 Responda NÃO.
 
-9:
-Explique Safe Zone de forma simples.
 
-10:
-Crie uma HISTÓRIA COMPLETA do personagem.
+RESPOSTA 9:
+
+Explique Safe Zone de maneira simples.
+
+
+==================================================
+RESPOSTA 10 — HISTÓRIA
+==================================================
+
+Crie uma história completa do personagem.
 
 A história deve ser escrita em PRIMEIRA PESSOA.
 
-Deve possuir aproximadamente 3 a 5 parágrafos.
+Faça entre 3 e 5 parágrafos.
 
-Conte:
+A história precisa contar:
 
 - Quem é o personagem
-- Onde cresceu
+- Onde nasceu ou cresceu
 - Como foi sua infância
 - Como foi sua juventude
-- Dificuldades que enfrentou
-- Problemas ou decisões erradas
+- Relação com a família
+- Dificuldades enfrentadas
+- Algum problema ou decisão errada
 - O que fez ele querer mudar
 - Por que decidiu ir para Meta City
 - O que pretende fazer na cidade
-- Seus objetivos
+- Seus objetivos futuros
 
-Não escreva apenas:
-"Quero recomeçar minha vida."
+NÃO escreva uma história genérica.
 
-Transforme o motivo de ir para Meta City
-em uma história completa.
+NÃO faça sempre o personagem querer ser motorista.
 
-Cada geração deve criar uma história diferente.
+Varie entre profissões e objetivos como:
 
-==========================================
+- mecânico
+- empresário
+- segurança
+- fotógrafo
+- entregador
+- advogado
+- médico
+- policial
+- caminhoneiro
+- empreendedor
+- funcionário de oficina
+- vendedor
+- trabalhar com veículos
+- abrir um negócio
+
+Escolha algo coerente com a história.
+
+Também varie:
+
+- cidade de origem
+- família
+- infância
+- dificuldades
+- personalidade
+- acontecimentos
+- objetivos
+- profissão
+
+A história deve parecer escrita naturalmente
+pelo próprio personagem.
+
+==================================================
 FORMATO
-==========================================
+==================================================
 
 Retorne SOMENTE JSON válido.
 
-Formato:
+Use exatamente este formato:
 
 {
-    "name": "Nome completo",
+    "name": "${nome}",
     "age": 24,
     "answers": [
         "Resposta 1",
@@ -233,28 +466,77 @@ Formato:
     ]
 }
 
+IMPORTANTE:
+
+O campo "name" deve ser exatamente:
+
+"${nome}"
+
+O campo "age" deve conter apenas um número.
+
+O array "answers" deve conter exatamente 10 respostas.
+
 `;
+
 }
 
 
-// ==========================================
-// FUNÇÃO GEMINI
-// ==========================================
+// =====================================================
+// ESPERAR
+// =====================================================
 
-async function generateWithModel(
+function esperar(ms) {
+
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                ms
+            )
+    );
+
+}
+
+
+// =====================================================
+// ERRO TEMPORÁRIO
+// =====================================================
+
+function erroTemporario(error) {
+
+    const mensagem =
+        error?.message ||
+        String(error);
+
+    return (
+        mensagem.includes("503") ||
+        mensagem.includes("UNAVAILABLE") ||
+        mensagem.includes("high demand") ||
+        mensagem.includes("429") ||
+        mensagem.includes("RESOURCE_EXHAUSTED") ||
+        mensagem.includes("overloaded")
+    );
+
+}
+
+
+// =====================================================
+// CHAMAR GEMINI
+// =====================================================
+
+async function chamarGemini(
     model,
     prompt
 ) {
 
     console.log(
-        `Tentando modelo: ${model}`
+        `Chamando modelo: ${model}`
     );
-
 
     const response =
         await ai.models.generateContent({
 
-            model: model,
+            model,
 
             contents: prompt,
 
@@ -270,8 +552,10 @@ async function generateWithModel(
 
         });
 
-
-    if (!response || !response.text) {
+    if (
+        !response ||
+        !response.text
+    ) {
 
         throw new Error(
             "O Gemini respondeu sem conteúdo."
@@ -279,62 +563,41 @@ async function generateWithModel(
 
     }
 
-
     return response.text;
 
 }
 
 
-// ==========================================
-// VERIFICAR SE É ERRO TEMPORÁRIO
-// ==========================================
+// =====================================================
+// STATUS
+// =====================================================
 
-function isTemporaryError(error) {
+app.get(
+    "/api/status",
+    (req, res) => {
 
-    const message =
-        error?.message ||
-        String(error);
+        res.json({
 
+            online: true,
 
-    return (
+            primaryModel:
+                PRIMARY_MODEL,
 
-        message.includes("503") ||
+            fallbackModel:
+                FALLBACK_MODEL,
 
-        message.includes("UNAVAILABLE") ||
+            apiKeyConfigured:
+                !!process.env.GEMINI_API_KEY
 
-        message.includes("high demand") ||
+        });
 
-        message.includes("429") ||
-
-        message.includes("RESOURCE_EXHAUSTED") ||
-
-        message.includes("overloaded")
-
-    );
-
-}
+    }
+);
 
 
-// ==========================================
-// ESPERA
-// ==========================================
-
-function sleep(ms) {
-
-    return new Promise(
-        resolve =>
-            setTimeout(
-                resolve,
-                ms
-            )
-    );
-
-}
-
-
-// ==========================================
-// GERAR
-// ==========================================
+// =====================================================
+// GERAR PERSONAGEM
+// =====================================================
 
 app.post(
     "/api/generate",
@@ -366,13 +629,40 @@ app.post(
             }
 
 
+            // ==========================================
+            // GERAR NOME NO SERVIDOR
+            // ==========================================
+
+            const nome =
+                gerarNome();
+
+            const seed =
+                gerarSeed();
+
+
+            console.log(
+                "Nome escolhido:",
+                nome
+            );
+
+            console.log(
+                "Seed:",
+                seed
+            );
+
+
             const prompt =
-                createPrompt();
+                criarPrompt(
+                    nome,
+                    seed
+                );
 
 
-            let text = null;
+            let respostaTexto =
+                null;
 
-            let lastError = null;
+            let ultimoErro =
+                null;
 
 
             // ==========================================
@@ -380,20 +670,20 @@ app.post(
             // ==========================================
 
             for (
-                let attempt = 1;
-                attempt <= 3;
-                attempt++
+                let tentativa = 1;
+                tentativa <= 3;
+                tentativa++
             ) {
 
                 try {
 
                     console.log(
-                        `Principal: tentativa ${attempt}/3`
+                        `Tentativa principal ${tentativa}/3`
                     );
 
 
-                    text =
-                        await generateWithModel(
+                    respostaTexto =
+                        await chamarGemini(
                             PRIMARY_MODEL,
                             prompt
                         );
@@ -404,18 +694,18 @@ app.post(
 
                 } catch (error) {
 
-                    lastError =
+                    ultimoErro =
                         error;
 
 
                     console.error(
-                        `Erro principal ${attempt}:`,
+                        "Erro:",
                         error?.message
                     );
 
 
                     if (
-                        !isTemporaryError(
+                        !erroTemporario(
                             error
                         )
                     ) {
@@ -426,20 +716,18 @@ app.post(
 
 
                     if (
-                        attempt < 3
+                        tentativa < 3
                     ) {
 
-                        const delay =
-                            attempt * 2000;
-
+                        const tempo =
+                            tentativa * 2000;
 
                         console.log(
-                            `Aguardando ${delay}ms...`
+                            `Aguardando ${tempo / 1000}s...`
                         );
 
-
-                        await sleep(
-                            delay
+                        await esperar(
+                            tempo
                         );
 
                     }
@@ -453,48 +741,30 @@ app.post(
             // FALLBACK
             // ==========================================
 
-            if (!text) {
+            if (!respostaTexto) {
 
                 console.log(
-                    "=========================================="
-                );
-
-                console.log(
-                    "MODELO PRINCIPAL INDISPONÍVEL"
-                );
-
-                console.log(
-                    `Tentando fallback: ${FALLBACK_MODEL}`
-                );
-
-                console.log(
-                    "=========================================="
+                    "Tentando modelo reserva..."
                 );
 
 
                 try {
 
-                    text =
-                        await generateWithModel(
+                    respostaTexto =
+                        await chamarGemini(
                             FALLBACK_MODEL,
                             prompt
                         );
 
 
-                    console.log(
-                        "Fallback funcionou!"
-                    );
+                } catch (error) {
 
-
-                } catch (fallbackError) {
-
-                    lastError =
-                        fallbackError;
-
+                    ultimoErro =
+                        error;
 
                     console.error(
-                        "Erro no fallback:",
-                        fallbackError?.message
+                        "Fallback falhou:",
+                        error?.message
                     );
 
                 }
@@ -503,25 +773,27 @@ app.post(
 
 
             // ==========================================
-            // TODOS FALHARAM
+            // ERRO FINAL
             // ==========================================
 
-            if (!text) {
+            if (!respostaTexto) {
 
-                const message =
-                    lastError?.message ||
-                    "Nenhum modelo respondeu.";
+                const mensagem =
+                    ultimoErro?.message ||
+                    "Não foi possível gerar o personagem.";
 
 
                 if (
-                    message.includes("429") ||
-                    message.includes("RESOURCE_EXHAUSTED")
+                    mensagem.includes("429") ||
+                    mensagem.includes(
+                        "RESOURCE_EXHAUSTED"
+                    )
                 ) {
 
                     return res.status(429).json({
 
                         error:
-                            "O limite da API do Gemini foi atingido. Tente novamente em alguns minutos."
+                            "O limite do Gemini foi atingido. Aguarde alguns minutos e tente novamente."
 
                     });
 
@@ -529,15 +801,19 @@ app.post(
 
 
                 if (
-                    message.includes("503") ||
-                    message.includes("UNAVAILABLE") ||
-                    message.includes("high demand")
+                    mensagem.includes("503") ||
+                    mensagem.includes(
+                        "UNAVAILABLE"
+                    ) ||
+                    mensagem.includes(
+                        "high demand"
+                    )
                 ) {
 
                     return res.status(503).json({
 
                         error:
-                            "Os modelos do Gemini estão temporariamente ocupados. Aguarde alguns segundos e tente novamente."
+                            "O Gemini está temporariamente ocupado. Tente novamente em alguns segundos."
 
                     });
 
@@ -547,7 +823,7 @@ app.post(
                 return res.status(500).json({
 
                     error:
-                        message
+                        mensagem
 
                 });
 
@@ -555,37 +831,47 @@ app.post(
 
 
             // ==========================================
-            // PARSE JSON
+            // TRANSFORMAR JSON
             // ==========================================
 
-            let result;
+            let resultado;
 
 
             try {
 
-                result =
-                    JSON.parse(text);
+                resultado =
+                    JSON.parse(
+                        respostaTexto
+                    );
 
 
             } catch (error) {
 
                 console.error(
-                    "JSON recebido:"
+                    "JSON inválido:"
                 );
 
                 console.error(
-                    text
+                    respostaTexto
                 );
 
 
                 return res.status(500).json({
 
                     error:
-                        "O Gemini retornou um formato inválido."
+                        "O Gemini retornou uma resposta inválida."
 
                 });
 
             }
+
+
+            // ==========================================
+            // CORRIGIR NOME CASO GEMINI ALTERE
+            // ==========================================
+
+            resultado.name =
+                nome;
 
 
             // ==========================================
@@ -593,68 +879,68 @@ app.post(
             // ==========================================
 
             if (
-                !result.name ||
-                !result.age ||
+                !resultado.age ||
                 !Array.isArray(
-                    result.answers
+                    resultado.answers
                 ) ||
-                result.answers.length !== 10
+                resultado.answers.length !== 10
             ) {
-
-                console.error(
-                    "Resposta incompleta:",
-                    result
-                );
-
 
                 return res.status(500).json({
 
                     error:
-                        "O Gemini não retornou todas as informações."
+                        "O Gemini não retornou as 10 respostas."
 
                 });
 
             }
 
 
-            console.log(
-                "=========================================="
-            );
+            // ==========================================
+            // GARANTIR RESPOSTA 1
+            // ==========================================
 
+            resultado.answers[0] =
+                `Meu nome é ${nome}.`;
+
+
+            // ==========================================
+            // RESPOSTA FINAL
+            // ==========================================
+
+            console.log("");
             console.log(
-                "SUCESSO"
+                "GERAÇÃO CONCLUÍDA"
             );
 
             console.log(
                 "Nome:",
-                result.name
+                nome
             );
 
             console.log(
                 "Idade:",
-                result.age
+                resultado.age
             );
 
             console.log(
                 "Respostas:",
-                result.answers.length
+                resultado.answers.length
             );
 
-            console.log(
-                "=========================================="
-            );
+            console.log("");
 
 
             return res.json({
 
                 name:
-                    result.name,
+                    nome,
 
                 age:
-                    result.age,
+                    resultado.age,
 
                 answers:
-                    result.answers
+                    resultado.answers
 
             });
 
@@ -684,42 +970,21 @@ app.post(
 );
 
 
-// ==========================================
-// START
-// ==========================================
+// =====================================================
+// SERVIDOR
+// =====================================================
 
 app.listen(
     PORT,
     "0.0.0.0",
     () => {
 
-        console.log("");
         console.log(
-            "=========================================="
-        );
-
-        console.log(
-            "META CITY GENERATOR ONLINE"
-        );
-
-        console.log(
-            "=========================================="
+            "Servidor online."
         );
 
         console.log(
             `Porta: ${PORT}`
-        );
-
-        console.log(
-            `Principal: ${PRIMARY_MODEL}`
-        );
-
-        console.log(
-            `Fallback: ${FALLBACK_MODEL}`
-        );
-
-        console.log(
-            "=========================================="
         );
 
     }
