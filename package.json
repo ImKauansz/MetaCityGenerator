@@ -1,15 +1,13 @@
 {
   "name": "metacity-generator",
-  "version": "1.0.0",
-  "description": "Gerador de personagens para Meta City",
+  "version": "2.0.0",
+  "description": "Gerador local de personagens para Meta City",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "@google/genai": "latest",
-    "dotenv": "latest",
     "express": "latest"
   }
 }

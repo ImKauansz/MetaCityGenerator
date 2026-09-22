@@ -1,1877 +1,208 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>Meta City Generator</title>
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Meta City — Private Character Studio</title>
+<meta name="theme-color" content="#0b0b0d" />
 <style>
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+:root{
+  --bg:#0a0a0c;--panel:#111114;--panel2:#151519;--panel3:#1a1a20;--line:#26262d;
+  --text:#f5f2ea;--muted:#8e8b86;--soft:#b8b4ac;--accent:#d8b4fe;--accent2:#8b5cf6;
+  --ok:#71d9ad;--danger:#ff7d8e;--shadow:0 26px 80px rgba(0,0,0,.42);
 }
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.app{min-height:100vh;display:grid;grid-template-columns:84px 1fr}.rail{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);background:#0d0d10;display:flex;flex-direction:column;align-items:center;padding:18px 0;z-index:20}.logo{width:46px;height:46px;border-radius:14px;border:1px solid #2c2c33;background:linear-gradient(145deg,#1b1b20,#111114);display:grid;place-items:center;font-size:12px;font-weight:900;letter-spacing:.5px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}.railnav{display:flex;flex-direction:column;gap:10px;margin-top:28px}.railbtn{width:46px;height:46px;border-radius:13px;border:1px solid transparent;background:transparent;color:#73717a;display:grid;place-items:center;font-size:17px;transition:.18s}.railbtn:hover{background:#151519;color:#ddd9d2}.railbtn.active{background:#18171d;color:#efe6ff;border-color:#302a3b;box-shadow:inset 3px 0 0 #a878ff}.railbottom{margin-top:auto;color:#55525a;font-size:9px;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:1.5px;text-transform:uppercase}
+.main{min-width:0}.topbar{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 34px;background:rgba(10,10,12,.9);backdrop-filter:blur(16px);position:sticky;top:0;z-index:15}.crumb{display:flex;align-items:center;gap:10px;font-size:12px;color:#6f6c74}.crumb strong{color:#d7d3cc}.dot{width:4px;height:4px;border-radius:50%;background:#46444c}.topactions{display:flex;align-items:center;gap:10px}.pill{height:34px;border:1px solid var(--line);background:#121216;color:#96939b;border-radius:999px;padding:0 12px;display:flex;align-items:center;gap:7px;font-size:10px;font-weight:800}.pill b{color:var(--ok);font-weight:800}.iconbtn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:#121216;color:#99969d}.iconbtn:hover{color:#fff;background:#17171c}
+.content{width:min(1240px,calc(100% - 56px));margin:0 auto;padding:34px 0 70px}.page{display:none}.page.active{display:block}.pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:22px}.kicker{font-size:9px;letter-spacing:1.7px;text-transform:uppercase;color:#7f7a85;font-weight:900}.pagehead h1{margin:7px 0 6px;font-size:30px;letter-spacing:-1.2px;font-weight:780}.pagehead p{margin:0;color:var(--muted);font-size:12px}.primary{height:42px;padding:0 16px;border:0;border-radius:11px;background:linear-gradient(135deg,#e6d2ff,#a878ff);color:#1a1024;font-weight:950;font-size:11px;box-shadow:0 12px 26px rgba(139,92,246,.18)}.primary:hover{filter:brightness(1.04);transform:translateY(-1px)}
+.studio{display:grid;grid-template-columns:340px minmax(0,1fr);gap:18px}.settings,.workspace,.historywrap{border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:var(--shadow)}.settings{padding:18px;height:max-content;position:sticky;top:98px}.section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.section-title h3{margin:0;font-size:11px;letter-spacing:.2px}.tag{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:#837a90;border:1px solid #302d35;padding:5px 7px;border-radius:999px}.field{margin-bottom:13px}.field:last-child{margin-bottom:0}.field label{display:block;font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#6f6b74;font-weight:900;margin:0 0 7px}.ctrl{width:100%;height:42px;border:1px solid #292930;background:#0f0f12;color:#e6e3dd;border-radius:10px;padding:0 12px;outline:none;font-size:11px}.ctrl:focus{border-color:#5a466f;box-shadow:0 0 0 3px rgba(168,120,255,.08)}select.ctrl{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#77727e 50%),linear-gradient(135deg,#77727e 50%,transparent 50%);background-position:calc(100% - 16px) 18px,calc(100% - 11px) 18px;background-size:5px 5px;background-repeat:no-repeat;padding-right:30px}.agegrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.divider{height:1px;background:var(--line);margin:18px 0}.generate{width:100%;height:46px;border:0;border-radius:11px;background:#f2eee6;color:#121216;font-size:10px;font-weight:950;letter-spacing:.5px;text-transform:uppercase;transition:.18s}.generate:hover{background:white;transform:translateY(-1px)}
+.workspace{min-height:620px;overflow:hidden}.empty{min-height:620px;display:grid;place-items:center;text-align:center;padding:42px}.empty-mark{width:72px;height:72px;border-radius:22px;border:1px solid #2b2a31;background:linear-gradient(145deg,#18181d,#101013);display:grid;place-items:center;margin:0 auto 18px;color:#8c8298;font-size:24px}.empty h2{font-size:18px;margin:0 0 7px}.empty p{max-width:380px;margin:0 auto;color:#77747c;font-size:11px;line-height:1.7}.character{display:none}.character.show{display:block}.charhead{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px}.identity{display:flex;align-items:center;gap:13px}.avatar{width:48px;height:48px;border-radius:15px;background:#19181d;border:1px solid #312d38;display:grid;place-items:center;color:#d9c8ee;font-weight:900;font-size:13px}.identity h2{margin:0;font-size:17px;letter-spacing:-.4px}.identity p{margin:4px 0 0;color:#77737b;font-size:10px}.charactions{display:flex;gap:7px;flex-wrap:wrap}.secondary,.ghost,.danger{height:36px;border-radius:9px;padding:0 11px;font-size:9px;font-weight:850}.secondary{border:1px solid #3a3146;background:#1c1722;color:#d8c5ef}.ghost{border:1px solid var(--line);background:#141418;color:#918e96}.danger{border:1px solid rgba(255,125,142,.22);background:rgba(255,125,142,.06);color:#ff98a5}.secondary:hover,.ghost:hover,.danger:hover{filter:brightness(1.12)}
+.answers{padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:10px}.answer{border:1px solid #25252b;background:#101013;border-radius:13px;padding:13px 14px;min-height:108px}.answer.story{grid-column:1/-1;min-height:200px;background:#121116;border-color:#2e2837}.answer-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.answer-no{font-size:8px;letter-spacing:1.2px;color:#796d86;font-weight:950;text-transform:uppercase}.mini-tools{display:flex;gap:3px}.mini{width:27px;height:27px;border:0;background:transparent;color:#5e5b63;border-radius:7px}.mini:hover{background:#1c1c21;color:#ddd}.answer-text{font-size:11.5px;line-height:1.68;color:#cbc7c1;white-space:pre-wrap;outline:none}.answer-text[contenteditable="true"]{background:#18151d;border:1px solid #453650;border-radius:8px;padding:9px}.character-foot{border-top:1px solid var(--line);padding:13px 18px;display:flex;justify-content:space-between;color:#5e5b63;font-size:9px}.character-foot b{color:#9b91a5}
+.historywrap{padding:18px}.historytoolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.historytoolbar input{width:260px}.historygrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.hcard{border:1px solid var(--line);border-radius:14px;background:#101013;padding:14px;position:relative}.hrow{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.hcard h3{margin:5px 0 4px;font-size:13px}.hcard p{margin:0;color:#6f6b73;font-size:9px}.account-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}.badge{font-size:8px;border:1px solid #2a2930;background:#16161a;color:#8e8a93;border-radius:999px;padding:4px 7px}.badge.ok{color:#a8e6c9;border-color:#254334;background:#10251b}.hbuttons{display:flex;gap:5px;margin-top:13px}.hbuttons button{flex:1}.emptyhistory{grid-column:1/-1;min-height:260px;display:grid;place-items:center;text-align:center;color:#706d75;font-size:11px}
+.modalback{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(9px);z-index:60;display:none;place-items:center;padding:20px}.modalback.show{display:grid}.modal{width:min(660px,100%);max-height:90vh;overflow:auto;border:1px solid #2d2d34;background:#111114;border-radius:20px;box-shadow:0 40px 100px rgba(0,0,0,.62)}.modalhead{padding:20px 22px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:16px}.modalhead h2{margin:0 0 5px;font-size:17px}.modalhead p{margin:0;color:#77737b;font-size:10px}.close{width:34px;height:34px;border:1px solid var(--line);background:#17171b;color:#88848d;border-radius:10px}.modalbody{padding:18px 22px}.accountbox{border:1px solid var(--line);border-radius:14px;background:#0f0f12;padding:14px;margin-bottom:10px}.accounthead{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}.accountname{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:900}.accounticon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;border:1px solid #2f2d35;background:#19181d;font-size:10px}.accountgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.accountgrid.three{grid-template-columns:1fr 1fr 1fr}.secretwrap{position:relative}.secretwrap .ctrl{padding-right:38px}.eye{position:absolute;right:7px;top:6px;width:30px;height:30px;border:0;background:transparent;color:#625e68;border-radius:7px}.eye:hover{background:#1d1d22;color:#fff}.privacy{border:1px solid #26272a;background:#121517;border-radius:11px;padding:10px 12px;color:#777b7d;font-size:9px;line-height:1.55;margin-top:12px}.modalfoot{padding:14px 22px 20px;display:flex;justify-content:flex-end;gap:8px}.modalfoot .ghost,.modalfoot .primary{height:40px}
+.detailgrid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}.detailbox{border:1px solid var(--line);border-radius:14px;background:#0f0f12;padding:14px}.detailbox h4{margin:0 0 12px;font-size:9px;letter-spacing:1px;color:#77727c;text-transform:uppercase}.credrow{display:grid;grid-template-columns:88px 1fr auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid #1f1f24}.credrow:first-of-type{border-top:0}.credrow span{font-size:9px;color:#6e6a72}.credval{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;color:#cfcac2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.copymini{width:28px;height:28px;border:1px solid #29292f;background:#151519;color:#77737d;border-radius:8px}.copymini:hover{color:#fff}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,14px);opacity:0;pointer-events:none;transition:.2s;background:#17171b;border:1px solid #303038;color:#eee;border-radius:10px;padding:10px 14px;font-size:9px;font-weight:850;box-shadow:0 18px 60px rgba(0,0,0,.5);z-index:100}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:980px){.app{grid-template-columns:68px 1fr}.railbtn{width:42px;height:42px}.studio{grid-template-columns:1fr}.settings{position:static}.answers{grid-template-columns:1fr}.answer.story{grid-column:auto}.historygrid{grid-template-columns:1fr 1fr}.accountgrid.three{grid-template-columns:1fr}.detailgrid{grid-template-columns:1fr}}
+@media(max-width:680px){.app{display:block}.rail{height:64px;width:100%;position:fixed;bottom:0;top:auto;border-right:0;border-top:1px solid var(--line);flex-direction:row;padding:8px 12px;justify-content:space-between}.logo,.railbottom{display:none}.railnav{margin:0;flex-direction:row;gap:8px}.main{padding-bottom:66px}.topbar{height:64px;padding:0 16px}.pill{display:none}.content{width:min(100% - 20px,1240px);padding-top:22px}.pagehead{align-items:flex-start;flex-direction:column}.studio{gap:12px}.settings,.workspace{border-radius:14px}.settings{padding:14px}.charhead{align-items:flex-start;flex-direction:column}.charactions{width:100%}.charactions button{flex:1}.historygrid{grid-template-columns:1fr}.historytoolbar{align-items:stretch;flex-direction:column}.historytoolbar input{width:100%}.accountgrid,.accountgrid.three{grid-template-columns:1fr}.modalback{padding:10px}.modalhead,.modalbody,.modalfoot{padding-left:15px;padding-right:15px}.modalfoot{flex-direction:column-reverse}.modalfoot button{width:100%}.character-foot{gap:8px;flex-direction:column}}
 
-:root {
-
-    --background: #060609;
-    --background-2: #0b0b11;
-
-    --card: rgba(17,17,25,.72);
-
-    --card-hover: rgba(25,25,36,.88);
-
-    --border: rgba(255,255,255,.08);
-
-    --purple: #8b5cf6;
-
-    --purple-light: #a78bfa;
-
-    --purple-dark: #6d28d9;
-
-    --white: #ffffff;
-
-    --text: #eeeeF3;
-
-    --muted: #8f8f9d;
-
+/* ===== ASTROZ4 NOIR GOLD LUXURY THEME ===== */
+:root{
+  --bg:#050505;--panel:#0b0b0b;--panel2:#10100f;--panel3:#151411;--line:#242018;
+  --text:#f7f2e7;--muted:#8f887b;--soft:#c3bba9;--accent:#d8b55b;--accent2:#f0d58b;
+  --ok:#c9a84f;--danger:#ff8b8b;--gold:#d6b35c;--gold2:#f3d995;--gold3:#8d6b25;
+  --shadow:0 28px 90px rgba(0,0,0,.58);--goldglow:0 0 38px rgba(214,179,92,.14);
 }
-
-html {
-    scroll-behavior: smooth;
+body{
+  background:
+    radial-gradient(circle at 82% 6%,rgba(214,179,92,.10),transparent 23%),
+    radial-gradient(circle at 18% 80%,rgba(141,107,37,.07),transparent 26%),
+    linear-gradient(135deg,#040404 0%,#090807 50%,#030303 100%);
+  background-attachment:fixed;overflow-x:hidden;
 }
-
-body {
-
-    min-height: 100vh;
-
-    color: var(--text);
-
-    font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-    background:
-
-        radial-gradient(
-            circle at 50% -20%,
-            rgba(139,92,246,.24),
-            transparent 38%
-        ),
-
-        radial-gradient(
-            circle at 0% 40%,
-            rgba(109,40,217,.10),
-            transparent 30%
-        ),
-
-        radial-gradient(
-            circle at 100% 70%,
-            rgba(139,92,246,.07),
-            transparent 30%
-        ),
-
-        var(--background);
-
-}
-
-
-/* ==========================================
-   BACKGROUND
-========================================== */
-
-.background {
-
-    position: fixed;
-
-    inset: 0;
-
-    overflow: hidden;
-
-    pointer-events: none;
-
-    z-index: -1;
-
-}
-
-.orb {
-
-    position: absolute;
-
-    border-radius: 50%;
-
-    filter: blur(100px);
-
-    opacity: .14;
-
-    animation:
-        float 10s ease-in-out infinite;
-
-}
-
-.orb.one {
-
-    width: 300px;
-    height: 300px;
-
-    background: #8b5cf6;
-
-    top: -100px;
-    left: -100px;
-
-}
-
-.orb.two {
-
-    width: 250px;
-    height: 250px;
-
-    background: #6d28d9;
-
-    right: -100px;
-    top: 35%;
-
-    animation-delay:
-        -4s;
-
-}
-
-.orb.three {
-
-    width: 220px;
-    height: 220px;
-
-    background: #7c3aed;
-
-    bottom: -100px;
-    left: 40%;
-
-    animation-delay:
-        -7s;
-
-}
-
-@keyframes float {
-
-    0%,100% {
-        transform:
-            translateY(0);
-    }
-
-    50% {
-        transform:
-            translateY(-30px);
-    }
-
-}
-
-
-/* ==========================================
-   CONTAINER
-========================================== */
-
-.container {
-
-    width:
-        min(
-            1050px,
-            calc(100% - 32px)
-        );
-
-    margin:
-        auto;
-
-    padding:
-        55px 0 45px;
-
-}
-
-
-/* ==========================================
-   HEADER
-========================================== */
-
-.header {
-
-    text-align:
-        center;
-
-    margin-bottom:
-        35px;
-
-}
-
-.badge {
-
-    display:
-        inline-flex;
-
-    align-items:
-        center;
-
-    gap:
-        8px;
-
-    padding:
-        8px 13px;
-
-    border:
-        1px solid
-        rgba(139,92,246,.25);
-
-    border-radius:
-        999px;
-
-    background:
-        rgba(139,92,246,.08);
-
-    color:
-        var(--purple-light);
-
-    font-size:
-        12px;
-
-    font-weight:
-        800;
-
-    letter-spacing:
-        .5px;
-
-    margin-bottom:
-        18px;
-
-}
-
-.status-dot {
-
-    width:
-        7px;
-
-    height:
-        7px;
-
-    border-radius:
-        50%;
-
-    background:
-        #22c55e;
-
-    box-shadow:
-        0 0 12px
-        #22c55e;
-
-}
-
-
-.logo {
-
-    width:
-        78px;
-
-    height:
-        78px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    margin:
-        0 auto 20px;
-
-    border-radius:
-        24px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #a78bfa,
-            #6d28d9
-        );
-
-    box-shadow:
-        0 25px 80px
-        rgba(139,92,246,.35);
-
-    font-size:
-        22px;
-
-    font-weight:
-        950;
-
-    letter-spacing:
-        -1px;
-
-}
-
-h1 {
-
-    font-size:
-        clamp(
-            34px,
-            7vw,
-            58px
-        );
-
-    line-height:
-        1;
-
-    letter-spacing:
-        -3px;
-
-    margin-bottom:
-        15px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #ffffff 20%,
-            #c4b5fd 60%,
-            #8b5cf6
-        );
-
-    -webkit-background-clip:
-        text;
-
-    background-clip:
-        text;
-
-    color:
-        transparent;
-
-}
-
-.subtitle {
-
-    color:
-        var(--muted);
-
-    font-size:
-        15px;
-
-}
-
-
-/* ==========================================
-   MAIN CARD
-========================================== */
-
-.main-card {
-
-    position:
-        relative;
-
-    overflow:
-        hidden;
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius:
-        28px;
-
-    background:
-        var(--card);
-
-    backdrop-filter:
-        blur(25px);
-
-    box-shadow:
-        0 40px 120px
-        rgba(0,0,0,.4);
-
-}
-
-.main-card::before {
-
-    content: "";
-
-    position:
-        absolute;
-
-    top:
-        0;
-
-    left:
-        15%;
-
-    width:
-        70%;
-
-    height:
-        1px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(167,139,250,.7),
-            transparent
-        );
-
-}
-
-
-/* ==========================================
-   START
-========================================== */
-
-.start {
-
-    padding:
-        75px 25px;
-
-    text-align:
-        center;
-
-}
-
-.start-icon {
-
-    width:
-        82px;
-
-    height:
-        82px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    margin:
-        0 auto 25px;
-
-    border-radius:
-        25px;
-
-    background:
-        rgba(139,92,246,.10);
-
-    border:
-        1px solid
-        rgba(139,92,246,.2);
-
-    font-size:
-        36px;
-
-}
-
-.start h2 {
-
-    font-size:
-        28px;
-
-    margin-bottom:
-        12px;
-
-    letter-spacing:
-        -.7px;
-
-}
-
-.start p {
-
-    max-width:
-        590px;
-
-    margin:
-        auto auto 30px;
-
-    color:
-        var(--muted);
-
-    line-height:
-        1.8;
-
-}
-
-
-/* ==========================================
-   BUTTON
-========================================== */
-
-.generate {
-
-    position:
-        relative;
-
-    overflow:
-        hidden;
-
-    display:
-        inline-flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    gap:
-        10px;
-
-    min-width:
-        280px;
-
-    padding:
-        17px 28px;
-
-    border:
-        0;
-
-    border-radius:
-        14px;
-
-    color:
-        white;
-
-    background:
-        linear-gradient(
-            135deg,
-            #8b5cf6,
-            #6d28d9
-        );
-
-    font-size:
-        15px;
-
-    font-weight:
-        850;
-
-    cursor:
-        pointer;
-
-    box-shadow:
-        0 18px 50px
-        rgba(109,40,217,.35);
-
-    transition:
-        .25s ease;
-
-}
-
-.generate:hover {
-
-    transform:
-        translateY(-3px);
-
-    box-shadow:
-        0 22px 60px
-        rgba(109,40,217,.45);
-
-}
-
-.generate:active {
-
-    transform:
-        translateY(0);
-
-}
-
-.generate:disabled {
-
-    opacity:
-        .6;
-
-    cursor:
-        wait;
-
-}
-
-
-/* ==========================================
-   LOADING
-========================================== */
-
-.loading {
-
-    display:
-        none;
-
-    padding:
-        90px 20px;
-
-    text-align:
-        center;
-
-}
-
-.spinner {
-
-    width:
-        55px;
-
-    height:
-        55px;
-
-    margin:
-        0 auto 25px;
-
-    border:
-        4px solid
-        rgba(255,255,255,.08);
-
-    border-top-color:
-        var(--purple);
-
-    border-right-color:
-        var(--purple-light);
-
-    border-radius:
-        50%;
-
-    animation:
-        spin .8s linear infinite;
-
-}
-
-@keyframes spin {
-
-    to {
-        transform:
-            rotate(360deg);
-    }
-
-}
-
-.loading h3 {
-
-    font-size:
-        20px;
-
-    margin-bottom:
-        8px;
-
-}
-
-.loading p {
-
-    color:
-        var(--muted);
-
-}
-
-.loading-status {
-
-    margin-top:
-        15px;
-
-    color:
-        var(--purple-light);
-
-    font-size:
-        13px;
-
-}
-
-
-/* ==========================================
-   RESULT
-========================================== */
-
-.result {
-
-    display:
-        none;
-
-    padding:
-        25px;
-
-}
-
-
-/* ==========================================
-   PROFILE
-========================================== */
-
-.profile {
-
-    position:
-        relative;
-
-    overflow:
-        hidden;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        space-between;
-
-    gap:
-        20px;
-
-    padding:
-        25px;
-
-    margin-bottom:
-        15px;
-
-    border:
-        1px solid
-        rgba(139,92,246,.20);
-
-    border-radius:
-        20px;
-
-    background:
-
-        linear-gradient(
-            135deg,
-            rgba(139,92,246,.13),
-            rgba(17,17,25,.5)
-        );
-
-}
-
-.profile::after {
-
-    content: "";
-
-    position:
-        absolute;
-
-    width:
-        150px;
-
-    height:
-        150px;
-
-    right:
-        -80px;
-
-    top:
-        -80px;
-
-    border-radius:
-        50%;
-
-    background:
-        rgba(139,92,246,.15);
-
-    filter:
-        blur(30px);
-
-}
-
-.profile-label {
-
-    color:
-        var(--purple-light);
-
-    font-size:
-        10px;
-
-    font-weight:
-        900;
-
-    letter-spacing:
-        1.5px;
-
-    margin-bottom:
-        7px;
-
-}
-
-.profile-name {
-
-    font-size:
-        clamp(
-            22px,
-            5vw,
-            30px
-        );
-
-    font-weight:
-        900;
-
-    letter-spacing:
-        -.8px;
-
-}
-
-.profile-age {
-
-    color:
-        var(--muted);
-
-    font-size:
-        14px;
-
-    margin-top:
-        5px;
-
-}
-
-.copy-all {
-
-    position:
-        relative;
-
-    z-index:
-        2;
-
-    padding:
-        12px 17px;
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius:
-        11px;
-
-    background:
-        rgba(255,255,255,.05);
-
-    color:
-        white;
-
-    font-weight:
-        750;
-
-    cursor:
-        pointer;
-
-    transition:
-        .2s;
-
-}
-
-.copy-all:hover {
-
-    background:
-        rgba(255,255,255,.09);
-
-}
-
-
-/* ==========================================
-   ANSWERS
-========================================== */
-
-.answers {
-
-    display:
-        flex;
-
-    flex-direction:
-        column;
-
-    gap:
-        10px;
-
-}
-
-.answer {
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius:
-        17px;
-
-    background:
-        rgba(10,10,15,.45);
-
-    transition:
-        .2s;
-
-    overflow:
-        hidden;
-
-}
-
-.answer:hover {
-
-    border-color:
-        rgba(139,92,246,.25);
-
-    background:
-        var(--card-hover);
-
-    transform:
-        translateY(-1px);
-
-}
-
-.answer-header {
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        space-between;
-
-    padding:
-        17px 19px 8px;
-
-}
-
-.answer-number {
-
-    color:
-        var(--purple-light);
-
-    font-size:
-        11px;
-
-    font-weight:
-        900;
-
-    letter-spacing:
-        1px;
-
-}
-
-.copy-answer {
-
-    border:
-        0;
-
-    background:
-        transparent;
-
-    color:
-        #70707d;
-
-    font-size:
-        12px;
-
-    font-weight:
-        700;
-
-    cursor:
-        pointer;
-
-}
-
-.copy-answer:hover {
-
-    color:
-        white;
-
-}
-
-.answer-text {
-
-    padding:
-        0 19px 19px;
-
-    color:
-        #d7d7df;
-
-    font-size:
-        14px;
-
-    line-height:
-        1.8;
-
-}
-
-.story {
-
-    line-height:
-        1.95;
-
-}
-
-
-/* ==========================================
-   BOTTOM BUTTONS
-========================================== */
-
-.buttons {
-
-    display:
-        grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap:
-        10px;
-
-    margin-top:
-        15px;
-
-}
-
-.button {
-
-    padding:
-        14px;
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius:
-        12px;
-
-    background:
-        rgba(255,255,255,.04);
-
-    color:
-        white;
-
-    font-weight:
-        800;
-
-    cursor:
-        pointer;
-
-    transition:
-        .2s;
-
-}
-
-.button:hover {
-
-    background:
-        rgba(255,255,255,.08);
-
-}
-
-.button.primary {
-
-    border-color:
-        transparent;
-
-    background:
-        linear-gradient(
-            135deg,
-            #8b5cf6,
-            #6d28d9
-        );
-
-}
-
-
-/* ==========================================
-   ERROR
-========================================== */
-
-.error {
-
-    display:
-        none;
-
-    margin:
-        18px 25px 25px;
-
-    padding:
-        16px;
-
-    border:
-        1px solid
-        rgba(239,68,68,.2);
-
-    border-radius:
-        13px;
-
-    background:
-        rgba(239,68,68,.06);
-
-    color:
-        #fca5a5;
-
-    font-size:
-        13px;
-
-    line-height:
-        1.6;
-
-}
-
-
-/* ==========================================
-   FOOTER
-========================================== */
-
-.footer {
-
-    text-align:
-        center;
-
-    padding-top:
-        22px;
-
-    color:
-        #555561;
-
-    font-size:
-        11px;
-
-}
-
-
-/* ==========================================
-   MOBILE
-========================================== */
-
-@media(max-width:650px) {
-
-    .container {
-
-        width:
-            calc(100% - 20px);
-
-        padding-top:
-            30px;
-
-    }
-
-    h1 {
-
-        letter-spacing:
-            -2px;
-
-    }
-
-    .main-card {
-
-        border-radius:
-            21px;
-
-    }
-
-    .start {
-
-        padding:
-            55px 18px;
-
-    }
-
-    .result {
-
-        padding:
-            12px;
-
-    }
-
-    .profile {
-
-        flex-direction:
-            column;
-
-        align-items:
-            flex-start;
-
-    }
-
-    .copy-all {
-
-        width:
-            100%;
-
-    }
-
-    .buttons {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
-}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.28;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:52px 52px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.65),transparent 88%);animation:gridFloat 18s linear infinite}
+body::after{content:"";position:fixed;width:440px;height:440px;right:-180px;top:18%;border-radius:50%;background:radial-gradient(circle,rgba(229,193,101,.13),transparent 64%);filter:blur(14px);pointer-events:none;z-index:-1;animation:orbFloat 8s ease-in-out infinite alternate}
+@keyframes gridFloat{to{transform:translate3d(52px,52px,0)}}
+@keyframes orbFloat{from{transform:translate3d(0,-18px,0) scale(.94)}to{transform:translate3d(-70px,58px,0) scale(1.12)}}
+@keyframes fadeRise{from{opacity:0;transform:translateY(16px) scale(.985);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+@keyframes goldPulse{0%,100%{box-shadow:0 0 0 0 rgba(214,179,92,.05),inset 0 1px 0 rgba(255,255,255,.04)}50%{box-shadow:0 0 30px rgba(214,179,92,.12),inset 0 1px 0 rgba(255,255,255,.06)}}
+@keyframes shimmer{0%{transform:translateX(-160%) skewX(-24deg)}100%{transform:translateX(260%) skewX(-24deg)}}
+@keyframes borderGlow{0%,100%{border-color:#332a18}50%{border-color:#665022}}
+@keyframes modalIn{from{opacity:0;transform:translateY(28px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes badgeBlink{0%,100%{opacity:.55}50%{opacity:1}}
+
+.app{grid-template-columns:92px 1fr}
+.rail{border-right:1px solid rgba(214,179,92,.14);background:linear-gradient(180deg,rgba(14,13,11,.98),rgba(6,6,6,.98));box-shadow:18px 0 60px rgba(0,0,0,.24)}
+.logo{position:relative;overflow:hidden;width:50px;height:50px;border-radius:16px;border-color:#4c3a17;background:linear-gradient(145deg,#19150d,#0b0a08);color:var(--gold2);box-shadow:inset 0 1px 0 rgba(255,231,164,.11),0 10px 35px rgba(0,0,0,.34),0 0 28px rgba(214,179,92,.08);animation:goldPulse 4s ease-in-out infinite}
+.logo::before{content:"";position:absolute;inset:-20%;background:linear-gradient(115deg,transparent 36%,rgba(255,227,151,.23) 49%,transparent 62%);animation:shimmer 5.5s ease-in-out infinite}
+.railbtn{color:#615b4f;border-radius:15px;transition:.3s cubic-bezier(.2,.8,.2,1)}
+.railbtn:hover{background:linear-gradient(145deg,#17140d,#0c0b09);color:#e4c66f;border-color:#3b2f18;transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.32)}
+.railbtn.active{background:linear-gradient(145deg,#211b0d,#100e09);color:var(--gold2);border-color:#5a451c;box-shadow:inset 3px 0 0 var(--gold),0 0 28px rgba(214,179,92,.10)}
+.railbottom{color:#66573a}
+.topbar{border-bottom-color:rgba(214,179,92,.12);background:linear-gradient(180deg,rgba(8,8,7,.92),rgba(6,6,6,.82));box-shadow:0 10px 40px rgba(0,0,0,.20)}
+.crumb strong{color:#e5d7b0}.dot{background:#856a2e}.pill{border-color:#2d281c;background:rgba(17,15,10,.78);color:#8f866f}.pill b{color:var(--gold2);position:relative}.pill b::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin-right:6px;box-shadow:0 0 10px var(--gold);animation:badgeBlink 1.8s ease-in-out infinite}.iconbtn{border-color:#2d281c;background:#0f0e0b;color:#8e8163;transition:.25s}.iconbtn:hover{color:#f2d98e;border-color:#665020;background:#18140c;transform:rotate(4deg) translateY(-1px)}
+.content{padding-top:40px}.page.active{animation:fadeRise .55s cubic-bezier(.2,.8,.2,1) both}.kicker{color:#9f8241}.pagehead h1{font-size:33px;font-weight:760;letter-spacing:-1.35px;background:linear-gradient(90deg,#fff8e8 0%,#d9c79c 68%,#a98d4c 100%);-webkit-background-clip:text;background-clip:text;color:transparent}.pagehead p{color:#8d8678}
+.primary,.generate{position:relative;overflow:hidden;background:linear-gradient(110deg,#8f6b20 0%,#d7b45b 35%,#f0d88c 50%,#bd9140 74%,#7b5918 100%);background-size:200% 100%;color:#161006;border:1px solid #e4c66f;box-shadow:0 14px 36px rgba(214,179,92,.16),inset 0 1px 0 rgba(255,255,255,.5);transition:.3s cubic-bezier(.2,.8,.2,1)}
+.primary::after,.generate::after{content:"";position:absolute;top:-100%;left:-35%;width:28%;height:300%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-24deg);transition:.55s}.primary:hover::after,.generate:hover::after{left:125%}.primary:hover,.generate:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 18px 42px rgba(214,179,92,.24),0 0 28px rgba(214,179,92,.10)}
+.settings,.workspace,.historywrap{border-color:#262116;background:linear-gradient(150deg,rgba(15,14,11,.96),rgba(7,7,7,.98));box-shadow:var(--shadow),inset 0 1px 0 rgba(255,224,143,.035);transition:.35s cubic-bezier(.2,.8,.2,1)}
+.settings:hover,.workspace:hover,.historywrap:hover{border-color:#3b311b;box-shadow:var(--shadow),var(--goldglow),inset 0 1px 0 rgba(255,224,143,.055)}
+.settings{animation:fadeRise .5s .04s both}.workspace{animation:fadeRise .55s .11s both}
+.section-title h3{color:#eadcb7}.tag{color:#b89a52;border-color:#3a301c;background:#121008}.field label{color:#8c7950}.ctrl{border-color:#282318;background:linear-gradient(180deg,#0c0b09,#080808);color:#efe7d7;transition:.25s}.ctrl:hover{border-color:#3a301c}.ctrl:focus{border-color:#8b6e2d;box-shadow:0 0 0 3px rgba(214,179,92,.07),0 0 24px rgba(214,179,92,.07)}select.ctrl{background-color:#0c0b09}.divider{background:linear-gradient(90deg,transparent,#362b17,transparent)}
+.empty-mark{border-color:#392f1c;background:radial-gradient(circle at 30% 20%,#1e190f,#090909 68%);color:#c6a650;box-shadow:0 0 42px rgba(214,179,92,.08);animation:goldPulse 4s ease-in-out infinite}.empty h2{color:#eadfca}.empty p{color:#817b70}
+.charhead{border-bottom-color:#272217;background:linear-gradient(90deg,rgba(214,179,92,.035),transparent 44%)}.avatar{border-color:#5a451d;background:linear-gradient(145deg,#201a0e,#0d0b08);color:#f0d88a;box-shadow:inset 0 1px 0 rgba(255,232,163,.10),0 0 24px rgba(214,179,92,.07)}.identity h2{color:#f6edd9}.identity p{color:#8f8779}.secondary{border-color:#56421f;background:linear-gradient(145deg,#1b160c,#0f0d09);color:#e3c66f;transition:.25s}.secondary:hover{border-color:#8a6927;background:#211a0c;transform:translateY(-1px)}.ghost{border-color:#2a251a;background:#0f0e0b;color:#9f9687;transition:.25s}.ghost:hover{color:#ead9ad;border-color:#4d3d1e;transform:translateY(-1px)}
+.answers{gap:12px}.answer{position:relative;overflow:hidden;border-color:#252117;background:linear-gradient(150deg,#0d0c0a,#080808);transition:.32s cubic-bezier(.2,.8,.2,1);animation:fadeRise .45s both}.answer:nth-child(2){animation-delay:.035s}.answer:nth-child(3){animation-delay:.07s}.answer:nth-child(4){animation-delay:.105s}.answer:nth-child(5){animation-delay:.14s}.answer:nth-child(6){animation-delay:.175s}.answer:nth-child(7){animation-delay:.21s}.answer:nth-child(8){animation-delay:.245s}.answer:nth-child(9){animation-delay:.28s}.answer:nth-child(10){animation-delay:.315s}.answer::before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent,rgba(231,196,103,.34),transparent);opacity:0;transition:.3s}.answer:hover{transform:translateY(-3px);border-color:#4d3c1d;box-shadow:0 18px 38px rgba(0,0,0,.24),0 0 30px rgba(214,179,92,.055)}.answer:hover::before{opacity:1}.answer.story{background:radial-gradient(circle at 88% 0%,rgba(214,179,92,.055),transparent 32%),linear-gradient(150deg,#11100c,#090909);border-color:#352c19}.answer-no{color:#ad8d45}.mini{color:#625b4f;transition:.22s}.mini:hover{background:#1a160d;color:#ebcf79;transform:scale(1.06)}.answer-text{color:#d1cabe}.answer-text[contenteditable="true"]{background:#15120b;border-color:#6a5020;box-shadow:inset 0 0 0 1px rgba(229,197,111,.04)}.character-foot{border-top-color:#262116;color:#6b655a}.character-foot b{color:#bc9b4f}
+.hcard{border-color:#282318;background:linear-gradient(150deg,#0e0d0a,#080808);transition:.3s cubic-bezier(.2,.8,.2,1);animation:fadeRise .45s both}.hcard:hover{transform:translateY(-4px);border-color:#55421d;box-shadow:0 20px 45px rgba(0,0,0,.30),0 0 28px rgba(214,179,92,.06)}.hcard h3{color:#eee4ce}.hcard p{color:#7e7769}.badge{border-color:#312b1e;background:#12100c;color:#8c826e}.badge.ok{color:#e7ca72;border-color:#59451d;background:#181207;box-shadow:inset 0 0 16px rgba(214,179,92,.035)}
+.modalback{background:rgba(0,0,0,.78);backdrop-filter:blur(15px) saturate(.8)}.modalback.show .modal{animation:modalIn .42s cubic-bezier(.16,1,.3,1) both}.modal{border-color:#42351c;background:radial-gradient(circle at 90% 0%,rgba(214,179,92,.06),transparent 34%),linear-gradient(150deg,#11100d,#080808);box-shadow:0 42px 120px rgba(0,0,0,.72),0 0 60px rgba(214,179,92,.07)}.modalhead{border-bottom-color:#2b2519}.modalhead h2{color:#f2e6c9}.modalhead p{color:#827b6f}.close{border-color:#312a1c;background:#11100c;color:#837861;transition:.25s}.close:hover{color:#f0d481;border-color:#6b5220;transform:rotate(90deg)}.accountbox,.detailbox{border-color:#2b2519;background:linear-gradient(145deg,#0d0c09,#080808)}.accounticon{border-color:#44361b;background:#17130b;color:#d9b75d}.privacy{border-color:#3a301c!important;background:rgba(214,179,92,.035)!important;color:#9b8d70!important}.modalfoot{border-top-color:#2a2418!important}
+.toast{border-color:#5d481e!important;background:linear-gradient(145deg,#18140b,#0b0a08)!important;color:#efd787!important;box-shadow:0 18px 60px rgba(0,0,0,.5),0 0 24px rgba(214,179,92,.09)!important}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:#070707}::-webkit-scrollbar-thumb{background:linear-gradient(#4a3a19,#241d10);border-radius:999px;border:2px solid #070707}::-webkit-scrollbar-thumb:hover{background:linear-gradient(#806326,#3b2d15)}
+::selection{background:#7b5e24;color:#fff3cf}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 </style>
-
 </head>
-
-
 <body>
+<div class="app">
+  <aside class="rail">
+    <div class="logo">MC</div>
+    <nav class="railnav">
+      <button class="railbtn active" id="navStudio" title="Studio" onclick="switchPage('studio')">✦</button>
+      <button class="railbtn" id="navHistory" title="Personagens salvos" onclick="switchPage('history')">▣</button>
+    </nav>
+    <div class="railbottom">ASTROZ4 · PRIVATE</div>
+  </aside>
 
-
-<div class="background">
-
-    <div class="orb one"></div>
-
-    <div class="orb two"></div>
-
-    <div class="orb three"></div>
-
-</div>
-
-
-<div class="container">
-
-
-    <header class="header">
-
-        <div class="badge">
-
-            <span class="status-dot"></span>
-
-            GERADOR ONLINE
-
-        </div>
-
-
-        <div class="logo">
-            MC
-        </div>
-
-
-        <h1>
-            Meta City
-            <br>
-            Generator
-        </h1>
-
-
-        <p class="subtitle">
-            Crie personagens únicos para sua whitelist
-        </p>
-
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb"><strong>Meta City</strong><span class="dot"></span><span id="crumbText">Character Studio</span></div>
+      <div class="topactions"><div class="pill"><b>●</b> Workspace disponível</div><button class="iconbtn" onclick="switchPage('history')" title="Biblioteca">⌘</button></div>
     </header>
 
+    <main class="content">
+      <section id="studioPage" class="page active">
+        <div class="pagehead">
+          <div><div class="kicker">Character Studio</div><h1>Nova identidade</h1><p>Monte um personagem completo e deixe a ficha pronta para uso.</p></div>
+          <button class="primary" onclick="generateCharacter()">✦ Gerar personagem</button>
+        </div>
 
-    <main class="main-card">
+        <div class="studio">
+          <aside class="settings">
+            <div class="section-title"><h3>Direção do personagem</h3><span class="tag">Configuração</span></div>
+            <div class="field"><label>Gênero</label><select id="gender" class="ctrl"><option value="random">Aleatório</option><option value="male">Masculino</option><option value="female">Feminino</option></select></div>
+            <div class="field"><label>Personalidade</label><select id="personality" class="ctrl"><option value="random">Aleatória</option><option value="calm">Tranquilo(a)</option><option value="ambitious">Ambicioso(a)</option><option value="humble">Humilde</option><option value="outgoing">Comunicativo(a)</option><option value="reserved">Reservado(a)</option></select></div>
+            <div class="field"><label>Objetivo profissional</label><select id="career" class="ctrl"><option value="random">Aleatório</option><option value="mecanica">Mecânica</option><option value="fotografia">Fotografia</option><option value="seguranca">Segurança</option><option value="empreendedorismo">Empreendedorismo</option><option value="logistica">Logística</option><option value="direito">Direito</option><option value="saude">Saúde</option><option value="policia">Polícia</option></select></div>
+            <div class="divider"></div>
+            <div class="field"><label>Faixa de idade</label><div class="agegrid"><input id="ageMin" class="ctrl" type="number" min="18" max="70" value="20" placeholder="Mínima"><input id="ageMax" class="ctrl" type="number" min="18" max="70" value="34" placeholder="Máxima"></div></div>
+            <div class="field"><label>Profundidade da história</label><select id="storyLength" class="ctrl"><option value="short">Objetiva</option><option value="medium" selected>Equilibrada</option><option value="detailed">Detalhada</option></select></div>
+            <div class="divider"></div>
+            <button class="generate" onclick="generateCharacter()">Gerar nova identidade</button>
+          </aside>
 
-
-        <!-- INÍCIO -->
-
-        <section
-            id="start"
-            class="start"
-        >
-
-            <div class="start-icon">
-                ✦
+          <section class="workspace">
+            <div id="emptyState" class="empty"><div><div class="empty-mark">✦</div><h2>Seu personagem aparece aqui</h2><p>Ajuste os critérios à esquerda ou mantenha tudo aleatório. Depois você pode editar qualquer resposta antes de salvar.</p></div></div>
+            <div id="characterView" class="character">
+              <div class="charhead"><div class="identity"><div id="avatar" class="avatar">MC</div><div><h2 id="charName">—</h2><p id="charMeta">—</p></div></div><div class="charactions"><button class="ghost" onclick="regenerateStory()">Nova história</button><button class="ghost" onclick="copyAll()">Copiar ficha</button><button class="secondary" onclick="openSaveModal()">Salvar personagem</button></div></div>
+              <div id="answers" class="answers"></div>
+              <div class="character-foot"><span id="charRef">Ficha #—</span><span>Workspace <b>Meta City</b> · crafted by <b>astroz4</b></span></div>
             </div>
+          </section>
+        </div>
+      </section>
 
-
-            <h2>
-                Pronto para começar?
-            </h2>
-
-
-            <p>
-                Gere automaticamente um personagem
-                completo com nome, idade, respostas
-                e uma história única para Meta City.
-            </p>
-
-
-            <button
-                id="generateButton"
-                class="generate"
-                onclick="generateCharacter()"
-            >
-                ✨ Gerar personagem
-            </button>
-
-        </section>
-
-
-        <!-- LOADING -->
-
-        <section
-            id="loading"
-            class="loading"
-        >
-
-            <div class="spinner"></div>
-
-
-            <h3>
-                Criando personagem
-            </h3>
-
-
-            <p>
-                O Gemini está preparando tudo...
-            </p>
-
-
-            <div
-                id="loadingStatus"
-                class="loading-status"
-            >
-                Escolhendo identidade...
-            </div>
-
-        </section>
-
-
-        <!-- RESULTADO -->
-
-        <section
-            id="result"
-            class="result"
-        >
-
-
-            <div class="profile">
-
-
-                <div>
-
-                    <div class="profile-label">
-                        PERSONAGEM GERADO
-                    </div>
-
-
-                    <div
-                        id="name"
-                        class="profile-name"
-                    ></div>
-
-
-                    <div
-                        id="age"
-                        class="profile-age"
-                    ></div>
-
-                </div>
-
-
-                <button
-                    class="copy-all"
-                    onclick="copyAll()"
-                >
-                    📋 Copiar tudo
-                </button>
-
-
-            </div>
-
-
-            <div
-                id="answers"
-                class="answers"
-            ></div>
-
-
-            <div class="buttons">
-
-                <button
-                    class="button primary"
-                    onclick="generateCharacter()"
-                >
-                    ✦ Gerar outro
-                </button>
-
-
-                <button
-                    class="button"
-                    onclick="copyAll()"
-                >
-                    📋 Copiar respostas
-                </button>
-
-            </div>
-
-
-        </section>
-
-
-        <!-- ERRO -->
-
-        <div
-            id="error"
-            class="error"
-        ></div>
-
-
+      <section id="historyPage" class="page">
+        <div class="pagehead"><div><div class="kicker">Biblioteca</div><h1>Personagens salvos</h1><p>Fichas e contas vinculadas em um único lugar.</p></div><button class="primary" onclick="switchPage('studio')">＋ Novo personagem</button></div>
+        <div class="historywrap"><div class="historytoolbar"><input id="historySearch" class="ctrl" placeholder="Buscar por nome ou profissão..." oninput="renderHistory()"><button class="danger" onclick="clearHistory()">Limpar biblioteca</button></div><div id="historyGrid" class="historygrid"></div></div>
+      </section>
     </main>
-
-
-    <footer class="footer">
-
-        Meta City Generator • Sistema de geração de personagens
-
-    </footer>
-
-
+  </div>
 </div>
 
+<div id="saveModal" class="modalback" onclick="if(event.target===this)closeSaveModal()"><div class="modal">
+  <div class="modalhead"><div><h2>Salvar personagem</h2><p>Adicione as contas vinculadas a esta identidade.</p></div><button class="close" onclick="closeSaveModal()">×</button></div>
+  <div class="modalbody">
+    <div class="accountbox"><div class="accounthead"><div class="accountname"><div class="accounticon">D</div>Discord</div><span class="tag">Opcional</span></div><div class="accountgrid"><div class="field"><label>Login</label><input id="discordLogin" class="ctrl" autocomplete="off" placeholder="email ou usuário"></div><div class="field"><label>Senha</label><div class="secretwrap"><input id="discordPass" class="ctrl" type="password" autocomplete="new-password" placeholder="••••••••"><button class="eye" onclick="toggleSecret('discordPass',this)" type="button">◉</button></div></div></div></div>
+    <div class="accountbox"><div class="accounthead"><div class="accountname"><div class="accounticon">R★</div>Rockstar Games</div><span class="tag">Opcional</span></div><div class="accountgrid three"><div class="field"><label>Login</label><input id="rockstarLogin" class="ctrl" autocomplete="off" placeholder="email ou usuário"></div><div class="field"><label>Senha</label><div class="secretwrap"><input id="rockstarPass" class="ctrl" type="password" autocomplete="new-password" placeholder="••••••••"><button class="eye" onclick="toggleSecret('rockstarPass',this)" type="button">◉</button></div></div><div class="field"><label>2FA</label><div class="secretwrap"><input id="rockstar2fa" class="ctrl" type="password" autocomplete="off" placeholder="chave / código"><button class="eye" onclick="toggleSecret('rockstar2fa',this)" type="button">◉</button></div></div></div></div>
+    <div class="privacy">Os dados preenchidos aqui ficam salvos apenas neste navegador. Para contas reais, prefira um gerenciador de senhas dedicado em vez de guardar credenciais importantes no armazenamento do navegador.</div>
+  </div>
+  <div class="modalfoot"><button class="ghost" onclick="saveCharacter(false)">Salvar sem contas</button><button class="primary" onclick="saveCharacter(true)">Salvar personagem e contas</button></div>
+</div></div>
 
+<div id="detailModal" class="modalback" onclick="if(event.target===this)closeDetailModal()"><div class="modal">
+  <div class="modalhead"><div><h2 id="detailTitle">Personagem</h2><p id="detailMeta">Ficha salva</p></div><button class="close" onclick="closeDetailModal()">×</button></div>
+  <div id="detailBody" class="modalbody"></div>
+  <div class="modalfoot"><button class="ghost" onclick="closeDetailModal()">Fechar</button><button class="primary" onclick="openDetailCharacter()">Abrir ficha</button></div>
+</div></div>
+
+<div id="toast" class="toast">Pronto</div>
 <script>
-
-let currentCharacter = null;
-
-
-// =====================================================
-// GERAR
-// =====================================================
-
-async function generateCharacter() {
-
-    const start =
-        document.getElementById(
-            "start"
-        );
-
-    const loading =
-        document.getElementById(
-            "loading"
-        );
-
-    const result =
-        document.getElementById(
-            "result"
-        );
-
-    const error =
-        document.getElementById(
-            "error"
-        );
-
-    const status =
-        document.getElementById(
-            "loadingStatus"
-        );
-
-    const button =
-        document.getElementById(
-            "generateButton"
-        );
-
-
-    start.style.display =
-        "none";
-
-    result.style.display =
-        "none";
-
-    error.style.display =
-        "none";
-
-    loading.style.display =
-        "block";
-
-
-    if (button) {
-
-        button.disabled =
-            true;
-
-    }
-
-
-    const mensagens = [
-
-        "Escolhendo identidade...",
-
-        "Criando personalidade...",
-
-        "Preparando respostas...",
-
-        "Escrevendo história...",
-
-        "Finalizando personagem..."
-
-    ];
-
-
-    let mensagemIndex = 0;
-
-
-    const intervalo =
-        setInterval(
-            () => {
-
-                mensagemIndex++;
-
-                if (
-                    mensagemIndex <
-                    mensagens.length
-                ) {
-
-                    status.textContent =
-                        mensagens[
-                            mensagemIndex
-                        ];
-
-                }
-
-            },
-            1500
-        );
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/generate",
-                {
-
-                    method:
-                        "POST",
-
-                    headers:
-                        {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                    body:
-                        JSON.stringify({})
-
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.error ||
-                "Erro no servidor."
-            );
-
-        }
-
-
-        if (
-            !data.name ||
-            !data.age ||
-            !Array.isArray(
-                data.answers
-            ) ||
-            data.answers.length !== 10
-        ) {
-
-            throw new Error(
-                "O servidor não retornou os dados completos."
-            );
-
-        }
-
-
-        currentCharacter =
-            data;
-
-
-        renderCharacter(
-            data
-        );
-
-
-    } catch (err) {
-
-        console.error(
-            err
-        );
-
-
-        error.textContent =
-            "❌ " +
-            (
-                err.message ||
-                "Erro desconhecido."
-            );
-
-
-        error.style.display =
-            "block";
-
-
-        start.style.display =
-            "block";
-
-
-    } finally {
-
-        clearInterval(
-            intervalo
-        );
-
-
-        loading.style.display =
-            "none";
-
-
-        if (button) {
-
-            button.disabled =
-                false;
-
-        }
-
-    }
-
-}
-
-
-// =====================================================
-// RENDER
-// =====================================================
-
-function renderCharacter(
-    data
-) {
-
-    document.getElementById(
-        "name"
-    ).textContent =
-        data.name;
-
-
-    document.getElementById(
-        "age"
-    ).textContent =
-        `${data.age} anos`;
-
-
-    const container =
-        document.getElementById(
-            "answers"
-        );
-
-
-    container.innerHTML =
-        "";
-
-
-    data.answers.forEach(
-        (answer, index) => {
-
-            const card =
-                document.createElement(
-                    "article"
-                );
-
-
-            card.className =
-                "answer";
-
-
-            const titulo =
-                index === 9
-                    ? "10 • HISTÓRIA"
-                    : `${index + 1} • RESPOSTA`;
-
-
-            card.innerHTML = `
-
-                <div class="answer-header">
-
-                    <span class="answer-number">
-                        ${titulo}
-                    </span>
-
-                    <button
-                        class="copy-answer"
-                        onclick="copyAnswer(${index})"
-                    >
-                        Copiar
-                    </button>
-
-                </div>
-
-                <div class="answer-text ${
-                    index === 9
-                        ? "story"
-                        : ""
-                }">
-                    ${escapeHTML(answer)}
-                </div>
-
-            `;
-
-
-            container.appendChild(
-                card
-            );
-
-        }
-    );
-
-
-    document.getElementById(
-        "result"
-    ).style.display =
-        "block";
-
-
-    window.scrollTo({
-
-        top:
-            0,
-
-        behavior:
-            "smooth"
-
-    });
-
-}
-
-
-// =====================================================
-// ESCAPAR HTML
-// =====================================================
-
-function escapeHTML(
-    text
-) {
-
-    const div =
-        document.createElement(
-            "div"
-        );
-
-
-    div.textContent =
-        text;
-
-
-    return div.innerHTML.replace(
-        /\n/g,
-        "<br>"
-    );
-
-}
-
-
-// =====================================================
-// COPIAR UMA
-// =====================================================
-
-async function copyAnswer(
-    index
-) {
-
-    if (!currentCharacter) {
-        return;
-    }
-
-
-    try {
-
-        await navigator.clipboard.writeText(
-            currentCharacter.answers[index]
-        );
-
-
-        showCopied();
-
-    } catch {
-
-        alert(
-            "Não foi possível copiar."
-        );
-
-    }
-
-}
-
-
-// =====================================================
-// COPIAR TUDO
-// =====================================================
-
-async function copyAll() {
-
-    if (!currentCharacter) {
-        return;
-    }
-
-
-    let texto = "";
-
-
-    texto +=
-        `Nome: ${currentCharacter.name}\n`;
-
-    texto +=
-        `Idade: ${currentCharacter.age} anos\n\n`;
-
-
-    currentCharacter.answers.forEach(
-        (answer, index) => {
-
-            texto +=
-                `${index + 1}. ${answer}\n\n`;
-
-        }
-    );
-
-
-    try {
-
-        await navigator.clipboard.writeText(
-            texto
-        );
-
-
-        showCopied();
-
-    } catch {
-
-        alert(
-            "Não foi possível copiar."
-        );
-
-    }
-
-}
-
-
-// =====================================================
-// COPIADO
-// =====================================================
-
-function showCopied() {
-
-    const original =
-        document.title;
-
-
-    document.title =
-        "✓ Copiado!";
-
-
-    setTimeout(
-        () => {
-
-            document.title =
-                original;
-
-        },
-        1300
-    );
-
-}
-
+const STORAGE_KEY='metacity_premium_characters_v1';const COUNT_KEY='metacity_premium_count_v1';let currentCharacter=null;let detailIndex=null;
+const MALE=['Arthur','Caio','Davi','Enzo','Gabriel','Heitor','João','Leonardo','Lucas','Matheus','Miguel','Nicolas','Pedro','Rafael','Samuel','Theo','Vinicius','Guilherme','Bruno','Murilo'];
+const FEMALE=['Alice','Beatriz','Bianca','Clara','Eduarda','Gabriela','Helena','Isabela','Júlia','Laura','Lívia','Luiza','Manuela','Mariana','Melissa','Sofia','Valentina','Vitória','Yasmin','Cecília'];
+const LAST=['Almeida','Barbosa','Cardoso','Carvalho','Castro','Costa','Dias','Ferreira','Freitas','Gomes','Lima','Martins','Melo','Mendes','Monteiro','Moraes','Moreira','Nunes','Oliveira','Pereira','Ramos','Rocha','Rodrigues','Santos','Silva','Souza','Teixeira','Vieira'];
+const ORIGINS=['Campinas, interior de São Paulo','Sorocaba, interior de São Paulo','Santos, litoral paulista','Belo Horizonte, Minas Gerais','Curitiba, Paraná','Goiânia, Goiás','Ribeirão Preto, São Paulo','São José dos Campos, São Paulo','Joinville, Santa Catarina','Londrina, Paraná'];
+const FAMILIES=['uma família simples e bastante trabalhadora','uma família unida, que sempre valorizou responsabilidade','uma casa onde independência e respeito sempre foram importantes','uma família pequena, acostumada a correr atrás das próprias coisas','uma família que passou por altos e baixos, mas sempre se manteve próxima'];
+const CHILDHOODS=['Desde cedo aprendi a lidar com responsabilidade e a ajudar no que fosse necessário em casa.','Minha infância foi tranquila na maior parte do tempo, mas sempre tive vontade de conhecer lugares novos.','Cresci observando muito as pessoas ao meu redor e aprendi a pensar antes de tomar decisões.','Sempre fui curioso e gostava de aprender na prática, principalmente quando envolvia trabalho e desafios.'];
+const DIFFICULTIES=['Passei por uma fase financeira complicada e precisei reorganizar meus planos.','Tive algumas escolhas ruins e precisei amadurecer rápido para colocar minha vida no lugar.','Uma mudança na minha família me fez repensar o que eu realmente queria para o futuro.','Percebi que estava parado no mesmo lugar e decidi que precisava buscar novos objetivos.'];
+const TURNAROUNDS=['Foi nesse período que comecei a valorizar mais disciplina, lealdade e responsabilidade.','Essa fase me ensinou que resultado vem de constância e que toda decisão tem consequência.','Depois disso passei a pensar mais no longo prazo e a evitar atalhos que poderiam me prejudicar.','A experiência me deixou mais preparado para lidar com pressão e com as consequências das minhas escolhas.'];
+const PERSONALITY={calm:['tranquilo','paciente'],ambitious:['ambicioso','determinado'],humble:['humilde','prestativo'],outgoing:['comunicativo','sociável'],reserved:['reservado','observador']};
+const CAREERS={mecanica:'trabalhar com mecânica e, no futuro, ter minha própria oficina',fotografia:'trabalhar com fotografia e construir uma boa rede de clientes',seguranca:'seguir na área de segurança e crescer profissionalmente',empreendedorismo:'começar trabalhando e juntar dinheiro para abrir meu próprio negócio',logistica:'construir carreira na área de logística e transporte',direito:'me desenvolver na área jurídica e construir uma carreira sólida',saude:'seguir uma carreira ligada à saúde e ajudar outras pessoas',policia:'me preparar para seguir carreira policial dentro da cidade'};
+const RULES=[
+['Metagaming é usar dentro do RP informações que o personagem descobriu fora do jogo. O correto é agir apenas com aquilo que ele realmente soube durante a história.','Metagaming acontece quando uma informação externa é usada para beneficiar o personagem dentro da cidade, mesmo sem ele ter descoberto aquilo no RP.'],
+['RDM é atacar ou matar alguém sem motivo ou contexto de RP. Toda ação precisa ter uma construção coerente antes da violência.','RDM é iniciar uma ação violenta contra outro jogador sem contexto prévio ou justificativa dentro do RP.'],
+['VDM é utilizar um veículo de propósito como arma contra outro jogador sem uma situação de RP que justifique a ação.','VDM acontece quando o carro ou outro veículo é usado intencionalmente para atropelar ou causar dano sem contexto válido.'],
+['Powergaming é forçar ações irreais, impossíveis ou exageradas para conseguir vantagem, ignorando os limites do personagem e da situação.','Powergaming é tentar impor situações que não seriam possíveis ou razoáveis, como ignorar ferimentos graves ou obrigar outra pessoa a aceitar uma ação sem chance de reação.'],
+['Amor à Vida significa valorizar a vida do personagem e reagir a situações de perigo de maneira coerente, evitando riscos desnecessários.','Amor à Vida é interpretar que o personagem teme perder a própria vida e, por isso, não se coloca em perigo sem motivo.'],
+['Combat Logging é sair do servidor de propósito durante uma ação para fugir das consequências do RP.','Combat Logging acontece quando alguém desconecta intencionalmente para escapar de uma abordagem, confronto ou consequência.'],
+['Não. Não participo de grupos ou servidores relacionados a hacks, cheats, aimbot, wallhack ou mod menu.','Não. Não faço parte de comunidades voltadas para cheats, hacks ou qualquer ferramenta que gere vantagem injusta.'],
+['Safe Zone é uma área protegida onde existem regras específicas para limitar ações agressivas ou abusivas.','Safe Zone é um local com proteção e regras próprias, normalmente restringindo ações violentas e abordagens inadequadas.']
+];
+function $(id){return document.getElementById(id)}function pick(a){return a[Math.floor(Math.random()*a.length)]}function clamp(v,min,max){return Math.max(min,Math.min(max,v))}function esc(t){return String(t??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]))}
+function careerLabel(k){return({mecanica:'Mecânica',fotografia:'Fotografia',seguranca:'Segurança',empreendedorismo:'Empreendedorismo',logistica:'Logística',direito:'Direito',saude:'Saúde',policia:'Polícia'})[k]||k}function personalityLabel(k){return({calm:'Tranquilo(a)',ambitious:'Ambicioso(a)',humble:'Humilde',outgoing:'Comunicativo(a)',reserved:'Reservado(a)'})[k]||k}
+function makeName(g){const pool=g==='female'?FEMALE:g==='male'?MALE:(Math.random()<.5?MALE:FEMALE);let a=pick(LAST),b=pick(LAST);while(a===b)b=pick(LAST);return `${pick(pool)} ${a} ${b}`}
+function makeStory(name,age,pKey,cKey,len){const p=PERSONALITY[pKey];const a=`Meu nome é ${name}, tenho ${age} anos e cresci em ${pick(ORIGINS)}, dentro de ${pick(FAMILIES)}. ${pick(CHILDHOODS)} Sempre fui uma pessoa ${p[0]} e ${p[1]}.`;const b=`Na juventude comecei a buscar minha independência e fiz alguns trabalhos diferentes para ganhar meu próprio dinheiro. ${pick(DIFFICULTIES)} ${pick(TURNAROUNDS)}`;const c='Decidi ir para Meta City porque quero um recomeço de verdade, conhecer pessoas novas e construir uma história sem depender do que já aconteceu comigo antes. Quero chegar com calma, trabalhar e conquistar meu espaço sem pular etapas.';const d=`Meu plano é ${CAREERS[cKey]}. Quero construir boas relações, aproveitar oportunidades e fazer meu nome na cidade pelas escolhas que eu fizer daqui para frente.`;if(len==='short')return `${a}\n\n${c}\n\n${d}`;if(len==='detailed')return `${a}\n\n${b}\n\nCom o tempo entendi que reputação se constrói no dia a dia. Quero aprender com as pessoas, assumir as consequências das minhas decisões e evitar caminhos fáceis que prejudiquem quem estiver ao meu redor.\n\n${c}\n\n${d} Não espero que tudo aconteça rápido. Quero deixar meu personagem evoluir de forma natural.`;return `${a}\n\n${b}\n\n${c}\n\n${d}`}
+function makeCharacter(){let min=clamp(+$('ageMin').value||20,18,70),max=clamp(+$('ageMax').value||34,18,70);if(min>max)[min,max]=[max,min];const age=Math.floor(Math.random()*(max-min+1))+min;const p=$('personality').value==='random'?pick(Object.keys(PERSONALITY)):$('personality').value;const c=$('career').value==='random'?pick(Object.keys(CAREERS)):$('career').value;const name=makeName($('gender').value);const count=(+localStorage.getItem(COUNT_KEY)||0)+1;localStorage.setItem(COUNT_KEY,count);return{id:Date.now(),number:count,name,age,personality:p,career:c,length:$('storyLength').value,answers:[`Meu nome é ${name}.`,`Tenho ${age} anos.`,...RULES.map(x=>pick(x)),makeStory(name,age,p,c,$('storyLength').value)],accounts:{discord:{login:'',password:''},rockstar:{login:'',password:'',twofa:''}},createdAt:new Date().toISOString()}}
+function generateCharacter(){currentCharacter=makeCharacter();renderCharacter(currentCharacter);toastMsg('Nova identidade criada')}
+function renderCharacter(c){$('emptyState').classList.add('hidden');$('characterView').classList.add('show');$('charName').textContent=c.name;$('charMeta').textContent=`${c.age} anos · ${careerLabel(c.career)} · ${personalityLabel(c.personality)}`;$('avatar').textContent=c.name.split(' ').slice(0,2).map(x=>x[0]).join('');$('charRef').textContent=`Ficha #${String(c.number||'—').padStart(3,'0')}`;$('answers').innerHTML='';c.answers.forEach((a,i)=>{const el=document.createElement('article');el.className='answer'+(i===9?' story':'');el.innerHTML=`<div class="answer-top"><span class="answer-no">${String(i+1).padStart(2,'0')} · ${i===9?'História':'Resposta'}</span><div class="mini-tools"><button class="mini" onclick="toggleEdit(${i},this)" title="Editar">✎</button><button class="mini" onclick="copyAnswer(${i})" title="Copiar">⧉</button></div></div><div id="answer-${i}" class="answer-text" contenteditable="false">${esc(a)}</div>`;$('answers').appendChild(el)});window.scrollTo({top:0,behavior:'smooth'})}
+function syncEdits(){if(!currentCharacter)return;currentCharacter.answers.forEach((_,i)=>{const e=$('answer-'+i);if(e)currentCharacter.answers[i]=e.innerText.trim()})}
+function toggleEdit(i,b){const e=$('answer-'+i),editing=e.contentEditable==='true';if(editing){e.contentEditable='false';currentCharacter.answers[i]=e.innerText.trim();b.textContent='✎';toastMsg('Alteração salva')}else{e.contentEditable='true';e.focus();b.textContent='✓'}}
+function regenerateStory(){if(!currentCharacter)return;syncEdits();currentCharacter.answers[9]=makeStory(currentCharacter.name,currentCharacter.age,currentCharacter.personality,currentCharacter.career,$('storyLength').value);renderCharacter(currentCharacter);toastMsg('História atualizada')}
+function openSaveModal(){if(!currentCharacter)return;syncEdits();$('discordLogin').value=currentCharacter.accounts?.discord?.login||'';$('discordPass').value=currentCharacter.accounts?.discord?.password||'';$('rockstarLogin').value=currentCharacter.accounts?.rockstar?.login||'';$('rockstarPass').value=currentCharacter.accounts?.rockstar?.password||'';$('rockstar2fa').value=currentCharacter.accounts?.rockstar?.twofa||'';$('saveModal').classList.add('show')}
+function closeSaveModal(){$('saveModal').classList.remove('show')}
+function toggleSecret(id,b){const e=$(id);e.type=e.type==='password'?'text':'password';b.textContent=e.type==='password'?'◉':'◎'}
+function getHistory(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch{return[]}}function setHistory(h){localStorage.setItem(STORAGE_KEY,JSON.stringify(h))}
+function saveCharacter(withAccounts){if(!currentCharacter)return;syncEdits();if(withAccounts){currentCharacter.accounts={discord:{login:$('discordLogin').value.trim(),password:$('discordPass').value},rockstar:{login:$('rockstarLogin').value.trim(),password:$('rockstarPass').value,twofa:$('rockstar2fa').value}}}else{currentCharacter.accounts={discord:{login:'',password:''},rockstar:{login:'',password:'',twofa:''}}}let h=getHistory();const existing=h.findIndex(x=>x.id===currentCharacter.id);if(existing>=0)h.splice(existing,1);h.unshift(JSON.parse(JSON.stringify(currentCharacter)));setHistory(h.slice(0,100));closeSaveModal();toastMsg('Personagem salvo na biblioteca')}
+function switchPage(page){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.railbtn').forEach(x=>x.classList.remove('active'));if(page==='history'){$('historyPage').classList.add('active');$('navHistory').classList.add('active');$('crumbText').textContent='Biblioteca';renderHistory()}else{$('studioPage').classList.add('active');$('navStudio').classList.add('active');$('crumbText').textContent='Character Studio'}}
+function renderHistory(){const q=$('historySearch').value.trim().toLowerCase();const all=getHistory();const filtered=all.map((c,i)=>({c,i})).filter(({c})=>!q||c.name.toLowerCase().includes(q)||careerLabel(c.career).toLowerCase().includes(q));$('historyGrid').innerHTML='';if(!filtered.length){$('historyGrid').innerHTML='<div class="emptyhistory">Nenhum personagem encontrado.</div>';return}filtered.forEach(({c,i})=>{const hasD=!!(c.accounts?.discord?.login||c.accounts?.discord?.password);const hasR=!!(c.accounts?.rockstar?.login||c.accounts?.rockstar?.password||c.accounts?.rockstar?.twofa);const el=document.createElement('article');el.className='hcard';el.innerHTML=`<div class="hrow"><div><div class="answer-no">Ficha #${String(c.number||i+1).padStart(3,'0')}</div><h3>${esc(c.name)}</h3><p>${c.age} anos · ${esc(careerLabel(c.career))}</p></div><button class="mini" onclick="deleteSaved(${i})" title="Excluir">×</button></div><div class="account-badges"><span class="badge ${hasD?'ok':''}">Discord ${hasD?'vinculado':'—'}</span><span class="badge ${hasR?'ok':''}">Rockstar ${hasR?'vinculado':'—'}</span></div><div class="hbuttons"><button class="ghost" onclick="showDetails(${i})">Detalhes</button><button class="secondary" onclick="loadSaved(${i})">Abrir</button></div>`;$('historyGrid').appendChild(el)})}
+function loadSaved(i){const h=getHistory();currentCharacter=JSON.parse(JSON.stringify(h[i]));switchPage('studio');renderCharacter(currentCharacter);toastMsg('Ficha carregada')}
+function deleteSaved(i){let h=getHistory();if(!h[i])return;h.splice(i,1);setHistory(h);renderHistory();toastMsg('Personagem excluído')}
+function clearHistory(){if(!getHistory().length)return;if(!confirm('Excluir todos os personagens salvos neste navegador?'))return;localStorage.removeItem(STORAGE_KEY);renderHistory();toastMsg('Biblioteca limpa')}
+function showDetails(i){const c=getHistory()[i];if(!c)return;detailIndex=i;$('detailTitle').textContent=c.name;$('detailMeta').textContent=`Ficha #${String(c.number||i+1).padStart(3,'0')} · ${c.age} anos · ${careerLabel(c.career)}`;const d=c.accounts?.discord||{};const r=c.accounts?.rockstar||{};$('detailBody').innerHTML=`<div class="detailgrid"><div class="detailbox"><h4>Discord</h4>${credRow('Login',d.login,'discord-login')}${credRow('Senha',d.password,'discord-pass',true)}</div><div class="detailbox"><h4>Rockstar Games</h4>${credRow('Login',r.login,'rockstar-login')}${credRow('Senha',r.password,'rockstar-pass',true)}${credRow('2FA',r.twofa,'rockstar-2fa',true)}</div></div>`;$('detailModal').classList.add('show')}
+function credRow(label,value,key,secret=false){const display=value?(secret?'••••••••':esc(value)):'Não informado';return `<div class="credrow"><span>${label}</span><div id="${key}" class="credval" data-value="${esc(value||'')}">${display}</div><button class="copymini" onclick="copyCredential('${key}')" title="Copiar">⧉</button></div>`}
+function copyCredential(id){const e=$(id);copyText(e?.dataset?.value||'')}
+function closeDetailModal(){$('detailModal').classList.remove('show');detailIndex=null}
+function openDetailCharacter(){if(detailIndex===null)return;const i=detailIndex;closeDetailModal();loadSaved(i)}
+function copyAnswer(i){syncEdits();copyText(currentCharacter.answers[i])}function copyAll(){if(!currentCharacter)return;syncEdits();let t=`Nome: ${currentCharacter.name}\nIdade: ${currentCharacter.age} anos\n\n`;currentCharacter.answers.forEach((a,i)=>t+=`${i+1}. ${a}\n\n`);copyText(t)}
+async function copyText(t){if(!t){toastMsg('Nenhum dado para copiar');return}try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(t);else fallbackCopy(t);toastMsg('Copiado')}catch{fallbackCopy(t);toastMsg('Copiado')}}function fallbackCopy(t){const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}
+function toastMsg(t){$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>$('toast').classList.remove('show'),1600)}
 </script>
-
 </body>
-
 </html>
